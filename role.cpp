@@ -11,12 +11,12 @@ role::role (string role_title, string role_description) //deleted role_ID: strin
 {
 }
 
-string role:assign_role (string role_title, string user_ID) //role_title: what role being assigned. user_ID: which user is being assigned a role
+string role:assign_role (string role_title, string user_id) //role_title: what role being assigned. user_ID: which user is being assigned a role. member comes from users.cpp (will be accessible when we merge class holder files like this one into the main cpp files (server, client, or both)
 {
 
 }
 
-void role:edit_role(string role_title, string user_ID) //return type tentative, may need to change
+void role:edit_role(string role_title, string user_id) //return type tentative, may need to change
 {
 
 }

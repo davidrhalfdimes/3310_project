@@ -3,6 +3,21 @@
 3/22: david & jeswin met. we decided it would be best to keep .cpp files seperate (like the DBMS,role,users.cpp etc. files) before copy and pasting them into the appropriate file (client or server or both)
 -David
 
+3/24:
+First goal: "Skeleton-ify" all classes from class diagram and get them to compile by linking them to the makefile.
+
+
+After that, we'll tackle client functionality first:
+multiple clients (Example code already supports infinite # of group chats)
+username
+setting default name
+GUI 
+
+and then server functionality last.
+
+
+
+Go from working system to working system. - our wise professor
 
 --
 ``this readme will be changed. just a temp thing so we don't forget it``

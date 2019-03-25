@@ -1,6 +1,6 @@
 #include <iostream>
 #include <DBMS.h>
-
+/*
 using namespace std;
  
 
@@ -17,3 +17,4 @@ bool DBMS :: sign_in_check(int user_id) //return type is a check, so it is set a
 {
   
 } 
+*/

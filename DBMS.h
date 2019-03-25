@@ -7,11 +7,11 @@ class DBMS
           
 
      public :
-          
-          DBMS(string nickname, int user_id);
-          void retrieve_data(string n, int n);
+         /*
+          DBMS(std::string nickname, int user_id);
+          void retrieve_data(std::string n, int n);
           void sign_in_check(int user_id);
-
+*/
      protected: 
 
 };

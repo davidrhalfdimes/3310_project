@@ -4,7 +4,12 @@
 #include "users.h"
 
 //using namespace std;
-
+//username
+//pass
+//static queue groups - or make vector - private
+//vectorbool<>
+//static available groups
+//create a context for that particular object
 
 users :: users(int user_id, std::string user_role, std::string user_nickname, std::string user_login)
 {

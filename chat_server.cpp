@@ -26,7 +26,7 @@ typedef std::deque<chat_message> chat_message_queue;
 
 //----------------------------------------------------------------------
 
-class chat_participant
+class chat_participant //have to implement this. this class will be the other users. should have user obj
 {
 public:
   virtual ~chat_participant() {}
@@ -63,9 +63,9 @@ public:
   }
 
 private:
-  std::set<chat_participant_ptr> participants_;
+  std::set<chat_participant_ptr> participants_; //user class will use this. list of participants in a group chat.
   enum { max_recent_msgs = 100 };
-  chat_message_queue recent_msgs_;
+  chat_message_queue recent_msgs_; //need queue for chat queue. chat_queue
 };
 
 //----------------------------------------------------------------------

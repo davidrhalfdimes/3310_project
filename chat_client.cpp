@@ -17,7 +17,7 @@
 
 using asio::ip::tcp;
 
-typedef std::deque<chat_message> chat_message_queue;
+typedef std::deque<chat_message> chat_message_queue;//queue for chat messages. also need to create queue for group chats(chat rooms) chat_room_queue for example. implement that in users class(?)
 
 class chat_client
 {
@@ -79,7 +79,7 @@ private:
         });
   }
 
-  void do_read_body()
+  void do_read_body() //similar implementation to chat_client.cpp note differences
   {
     asio::async_read(socket_,
         asio::buffer(read_msg_.body(), read_msg_.body_length()),
@@ -98,7 +98,7 @@ private:
         });
   }
 
-  void do_write()
+  void do_write() //similar implementation to chat_server.cpp note differences
   {
     asio::async_write(socket_,
         asio::buffer(write_msgs_.front().data(),
@@ -139,10 +139,21 @@ int main(int argc, char* argv[])
 
     asio::io_context io_context;
 
-    tcp::resolver resolver(io_context);
+    //this one is current client that will receive message
+    tcp::resolver resolver(io_context); //instead of io_context, need class that will contain endpoints of each user and pass that member as an argument into this function as many times as necessary
+    //need as many io_context's as we have # of groups
+    //maybe create loop that keeps passing in endpoint until i>endpoint
+    
+    //how many groups there are: create that many threads
+    //if that thread is already created, don't create another. this will be managed by the static queue_groups and vector bool<> members in userse class
+    
+    //this one is for server IP and port
     auto endpoints = resolver.resolve(argv[1], argv[2]);
+
     chat_client c(io_context, endpoints);
 
+    //call upon user class function: if user is part of 0 group, use that thread to create new thread. dequeue the group when the group needs to be deleted.
+    //how are we storing the data?? - 
     std::thread t([&io_context](){ io_context.run(); });
 
     char line[chat_message::max_body_length + 1];

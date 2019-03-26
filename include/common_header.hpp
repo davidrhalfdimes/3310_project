@@ -25,5 +25,7 @@
 
 //programmer created headers
 #include "chat_message.hpp"
+#include "chat_client.hpp"
+#include "chat_message.hpp"
 
 #endif

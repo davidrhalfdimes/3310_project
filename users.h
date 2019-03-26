@@ -7,10 +7,10 @@ class users
 
 	public:
 	
-	users(int user_id, string user_role, string user_nickname, string user_login);
-	string add_user(int user_id, string user_role, string user_nickname, string user_login);
-	string delete_user(int user_id, string user_role, string user_nickname, string user_login);
-	string search_user(int user_id);	
+	users(int user_id, std::string user_role, std::string user_nickname, std::string user_login);
+	std::string add_user(int user_id, std::string user_role, std::string user_nickname, std::string user_login);
+	std::string delete_user(int user_id, std::string user_role, std::string user_nickname, std::string user_login);
+	std::string search_user(int user_id);	
 	
 
 	protected:

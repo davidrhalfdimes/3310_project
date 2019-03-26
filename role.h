@@ -8,9 +8,9 @@ class role
 
 	public:
 		
-	role(string role_title, string role_description);
-	string assign_role(string role_title, string user_id);
-	void edit_role(string role_title, string user_id);	
+	role(std::string role_title, std::string role_description);
+	std::string assign_role(std::string role_title, std::string user_id);
+	void edit_role(std::string role_title, std::string user_id);	
 
 	protected:
 

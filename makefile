@@ -8,21 +8,28 @@ all: chat_client chat_server
 
 COMMON_HEADER = chat_message.hpp
 
-chat_client.o: ${COMMON_HEADER} chat_client.cpp DBMS.cpp #client .cpp files go here
+#~~Adding client class: put .cpp in next line
+chat_client.o: ${COMMON_HEADER} chat_client.cpp DBMS.cpp role.cpp users.cpp
 
-chat_client:chat_client.o DBMS.o #client .o files go here
-	${CXX} -o chat_client chat_client.o DBMS.o -lpthread -lncurses
+#~~Adding client class: put .o in next two lines
+chat_client:chat_client.o DBMS.o role.o users.o
+	${CXX} -o chat_client chat_client.o DBMS.o role.o users.o -lpthread -lncurses
 
 chat_server.o: ${COMMON_HEADER} chat_message.hpp chat_server.cpp
 
-chat_server:chat_server.o DBMS.o #server .o files go here
-	${CXX} -o chat_server chat_server.o DBMS.o -lpthread
+#~~Adding server class: put .o in next two lines
+chat_server:chat_server.o DBMS.o users.o
+	${CXX} -o chat_server chat_server.o DBMS.o users.o -lpthread
 
-#to add more stubs (skeletons) of classes from class diagram, follow this format:
+#~~Adding any class: follow this formula below
 DBMS.cpp:${COMMON_HEADER} DBMS.h 
 
-#also add the .o file here so that the 'make clean' command cleans out all necessary files
+role.cpp:${COMMON_HEADER} role.h
+
+users.cpp:${COMMON_HEADER} users.h
+
+#~~Adding any class: so that the 'make clean' command works properly, put .o in next line
 clean:
-	-rm -f chat_client chat_server chat_client.o chat_server.o DBMS.o
+	-rm -f chat_client chat_server chat_client.o chat_server.o DBMS.o role.o users.o
 
 

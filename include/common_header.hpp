@@ -18,6 +18,7 @@
 #include "asio.hpp"
 
 //UUID generation headers
+//this is meant to identify who sent and who receive 
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>

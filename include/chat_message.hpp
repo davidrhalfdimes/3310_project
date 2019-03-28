@@ -6,7 +6,7 @@
 class chat_message
 {
   public:
-    enum { header_length = 50 };
+    enum { header_length = 5 };
     enum { max_body_length = 512 };
 
     //default constructor

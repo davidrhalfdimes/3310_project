@@ -8,12 +8,14 @@
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
 
+
 #include <cstdlib>
 #include <deque>
 #include <iostream>
 #include <thread>
 #include "asio.hpp"
 #include "chat_message.hpp"
+#include <ncurses.h>
 
 using asio::ip::tcp;
 
@@ -129,6 +131,11 @@ private:
 
 int main(int argc, char* argv[])
 {
+//	char str[80]; //attempting ncurses implementation
+//	initscr();
+//	refresh();
+
+  //    printw("Hello world");
   try
   {
     if (argc != 3)
@@ -164,6 +171,9 @@ int main(int argc, char* argv[])
       std::memcpy(msg.body(), line, msg.body_length());
       msg.encode_header();
       c.write(msg);
+    //  getstr(str);
+
+
     }
 
     c.close();
@@ -173,6 +183,9 @@ int main(int argc, char* argv[])
   {
     std::cerr << "Exception: " << e.what() << "\n";
   }
+
+
+  //endwin();
 
   return 0;
 }

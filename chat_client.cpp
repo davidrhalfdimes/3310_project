@@ -129,20 +129,49 @@ private:
   chat_message_queue write_msgs_;
 };
 
-int main(int argc, char* argv[])
+void chat_function(chat_client *c)
 {
-//	char str[80]; //attempting ncurses implementation
-//	initscr();
-//	refresh();
-
-  //    printw("Hello world");
-  try
-  {
-    if (argc != 3)
+    char line[chat_message::max_body_length + 1];
+ 
+    while (std::cin.getline(line, chat_message::max_body_length + 1))
     {
-      std::cerr << "Usage: chat_client <host> <port>\n";
-      return 1;
+
+//      refresh();
+      chat_message msg;
+      msg.body_length(std::strlen(line));
+      std::memcpy(msg.body(), line, msg.body_length());
+      msg.encode_header();
+      c->write(msg); //dereference
+  
+      //  getstr(str);
     }
+}
+
+int main(int argc, char* argv[])
+{ 
+//	produce screen that takes user username
+//	char str[80]; //attempting ncurses implementation
+	initscr();
+	cbreak(); //enable CTRL+C just in case
+	 
+	int y, x, yBeg, xBeg, yMax, xMax;
+
+	getyx(stdscr,y,x);
+	getbegyx(stdscr,yBeg,xBeg);
+	getmaxyx(stdscr,yMax,xMax); //store maximum values into these variables
+	 
+	WINDOW * inputwin = newwin(3,xMax-12,yMax-5,5); //height,widt,starty,startx
+	refresh();
+	box(inputwin,0,0);
+	wrefresh(inputwin);
+	try
+  	{
+    		
+		if (argc != 3)
+    		{
+      		std::cerr << "Usage: chat_client <host> <port>\n";
+      		return 1;
+    		}
 
     asio::io_context io_context;
 
@@ -154,7 +183,7 @@ int main(int argc, char* argv[])
     //how many groups there are: create that many threads
     //if that thread is already created, don't create another. this will be managed by the static queue_groups and vector bool<> members in userse class
     
-    //this one is for server IP and port
+    //this one is for server IP and port: 127.0.0.1 9000, for example
     auto endpoints = resolver.resolve(argv[1], argv[2]);
 
     chat_client c(io_context, endpoints);
@@ -163,8 +192,11 @@ int main(int argc, char* argv[])
     //how are we storing the data?? - 
     std::thread t([&io_context](){ io_context.run(); });
 
-    char line[chat_message::max_body_length + 1];
-    while (std::cin.getline(line, chat_message::max_body_length + 1))
+//    char line[chat_message::max_body_length + 1];
+	
+    chat_function(&c);
+
+/*    while (std::cin.getline(line, chat_message::max_body_length + 1))
     {
       chat_message msg;
       msg.body_length(std::strlen(line));
@@ -172,10 +204,8 @@ int main(int argc, char* argv[])
       msg.encode_header();
       c.write(msg);
     //  getstr(str);
-
-
     }
-
+*/
     c.close();
     t.join();
   }
@@ -185,7 +215,7 @@ int main(int argc, char* argv[])
   }
 
 
-  //endwin();
+  endwin();
 
   return 0;
 }

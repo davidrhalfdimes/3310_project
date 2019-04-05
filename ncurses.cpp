@@ -14,7 +14,7 @@ Ncurses::~Ncurses()
 {
 }
 
-void Ncurses::init_draw()
+void Ncurses::init_draw() //draw the screen
 {
       	initscr();
 	cbreak(); //enable CTRL+C just in case
@@ -32,10 +32,19 @@ void Ncurses::init_draw()
 }
 
 //redraw function
-void Ncurses::redraw()
+void Ncurses::redraw() //redraw the screen so additional input can be made
 {
-
+	//wrefresh();
 }
 
-//function that returns string. this function will then send string info in somewhere in chat client so that the message can be printed
 
+//function that returns string. this function will then send string info in somewhere in chat client so that the message can be printed
+void Ncurses::getInput() //trying to accept user string
+{
+	//wgetstr(); //accept line of user string from a window. need to figure out how to pass the inpuwin from init_draw so this can use that window, as well as other the function
+}
+
+void Ncurses::exit()
+{
+	endwin();
+}

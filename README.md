@@ -6,6 +6,8 @@
 3/24:
 First goal: "Skeleton-ify" all classes from class diagram and get them to compile by linking them to the makefile.
 
+4/5:
+still clueless
 
 After that, we'll tackle client functionality first:
 multiple clients (Example code already supports infinite # of group chats)

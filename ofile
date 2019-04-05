@@ -1,0 +1,76 @@
+g++ -Wall -O0 -g -std=c++11 -I/usr/local/asio-1.12.2/include -I./  -c -o ncurses.o ncurses.cpp
+ncurses.cpp: In member function ‘void Ncurses::init_draw()’:
+ncurses.cpp:22:8: error: ‘initscr’ was not declared in this scope
+        initscr();
+        ^~~~~~~
+ncurses.cpp:22:8: note: suggested alternative: ‘init_draw’
+        initscr();
+        ^~~~~~~
+        init_draw
+ncurses.cpp:23:2: error: ‘cbreak’ was not declared in this scope
+  cbreak(); //enable CTRL+C just in case
+  ^~~~~~
+ncurses.cpp:23:2: note: suggested alternative: ‘fread’
+  cbreak(); //enable CTRL+C just in case
+  ^~~~~~
+  fread
+ncurses.cpp:27:8: error: ‘stdscr’ was not declared in this scope
+  getyx(stdscr,y,x);
+        ^~~~~~
+ncurses.cpp:27:8: note: suggested alternative: ‘stderr’
+  getyx(stdscr,y,x);
+        ^~~~~~
+        stderr
+ncurses.cpp:27:2: error: ‘getyx’ was not declared in this scope
+  getyx(stdscr,y,x);
+  ^~~~~
+ncurses.cpp:27:2: note: suggested alternative: ‘gets’
+  getyx(stdscr,y,x);
+  ^~~~~
+  gets
+ncurses.cpp:28:2: error: ‘getbegyx’ was not declared in this scope
+  getbegyx(stdscr,yBeg,xBeg);
+  ^~~~~~~~
+ncurses.cpp:28:2: note: suggested alternative: ‘getdelim’
+  getbegyx(stdscr,yBeg,xBeg);
+  ^~~~~~~~
+  getdelim
+ncurses.cpp:29:2: error: ‘getmaxyx’ was not declared in this scope
+  getmaxyx(stdscr,yMax,xMax); //store maximum values into these variables
+  ^~~~~~~~
+ncurses.cpp:29:2: note: suggested alternative: ‘getdate’
+  getmaxyx(stdscr,yMax,xMax); //store maximum values into these variables
+  ^~~~~~~~
+  getdate
+ncurses.cpp:31:2: error: ‘WINDOW’ was not declared in this scope
+  WINDOW * inputwin = newwin(3,xMax-12,yMax-5,5); //height,widt,starty,startx
+  ^~~~~~
+ncurses.cpp:31:11: error: ‘inputwin’ was not declared in this scope
+  WINDOW * inputwin = newwin(3,xMax-12,yMax-5,5); //height,widt,starty,startx
+           ^~~~~~~~
+ncurses.cpp:31:11: note: suggested alternative: ‘putw’
+  WINDOW * inputwin = newwin(3,xMax-12,yMax-5,5); //height,widt,starty,startx
+           ^~~~~~~~
+           putw
+ncurses.cpp:31:22: error: ‘newwin’ was not declared in this scope
+  WINDOW * inputwin = newwin(3,xMax-12,yMax-5,5); //height,widt,starty,startx
+                      ^~~~~~
+ncurses.cpp:31:22: note: suggested alternative: ‘rewind’
+  WINDOW * inputwin = newwin(3,xMax-12,yMax-5,5); //height,widt,starty,startx
+                      ^~~~~~
+                      rewind
+ncurses.cpp:32:2: error: ‘refresh’ was not declared in this scope
+  refresh();
+  ^~~~~~~
+ncurses.cpp:33:2: error: ‘box’ was not declared in this scope
+  box(inputwin,0,0);
+  ^~~
+ncurses.cpp:33:2: note: suggested alternative: ‘bool’
+  box(inputwin,0,0);
+  ^~~
+  bool
+ncurses.cpp:34:2: error: ‘wrefresh’ was not declared in this scope
+  wrefresh(inputwin);
+  ^~~~~~~~
+<builtin>: recipe for target 'ncurses.o' failed
+make: *** [ncurses.o] Error 1

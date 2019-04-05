@@ -1,6 +1,6 @@
 CXX=g++
 
-CPPFLAGS=-I/usr/local/asio-1.12.2/include -I./
+CPPFLAGS=-I/usr/local/asio-1.12.2/include 
 
 CXXFLAGS=-Wall -O0 -g -std=c++11
 
@@ -9,11 +9,11 @@ all: chat_client chat_server
 COMMON_HEADER = chat_message.hpp
 
 #~~Adding client class: put .cpp in next line
-chat_client.o: ${COMMON_HEADER} chat_client.cpp DBMS.cpp role.cpp users.cpp
+chat_client.o: ${COMMON_HEADER} chat_client.cpp DBMS.cpp role.cpp users.cpp Ncurses.cpp
 
 #~~Adding client class: put .o in next two lines
-chat_client:chat_client.o DBMS.o role.o users.o
-	${CXX} -o chat_client chat_client.o DBMS.o role.o users.o -lpthread -lncurses
+chat_client:chat_client.o DBMS.o role.o users.o ncurses.o
+	${CXX} -o chat_client ncurses.o chat_client.o DBMS.o role.o users.o -lpthread -lncurses
 
 chat_server.o: ${COMMON_HEADER} chat_message.hpp chat_server.cpp
 
@@ -28,8 +28,10 @@ role.cpp:${COMMON_HEADER} role.h
 
 users.cpp:${COMMON_HEADER} users.h
 
+ncurses.cpp:ncurses.h
+
 #~~Adding any class: so that the 'make clean' command works properly, put .o in next line
 clean:
-	-rm -f chat_client chat_server chat_client.o chat_server.o DBMS.o role.o users.o
+	-rm -f chat_client chat_server chat_client.o chat_server.o DBMS.o role.o users.o ncurses.o
 
 

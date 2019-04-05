@@ -17,7 +17,9 @@
 #include "chat_message.hpp"
 #include <ncurses.h>
 
+#include "ncurses.h"
 using asio::ip::tcp;
+
 
 typedef std::deque<chat_message> chat_message_queue;//queue for chat messages. also need to create queue for group chats(chat rooms) chat_room_queue for example. implement that in users class(?)
 
@@ -129,21 +131,22 @@ private:
   chat_message_queue write_msgs_;
 };
 
-void chat_function(chat_client *c)
+void chat_function(chat_client *c,Ncurses obj)
 {
     char line[chat_message::max_body_length + 1];
  
     while (std::cin.getline(line, chat_message::max_body_length + 1))
     {
 
-//      refresh();
+//      refresh(); // or wrefresh?
       chat_message msg;
       msg.body_length(std::strlen(line));
       std::memcpy(msg.body(), line, msg.body_length());
       msg.encode_header();
       c->write(msg); //dereference
-  
-      //  getstr(str);
+     
+      obj.init_draw ();	
+      //  getstr(str); //attempting to obtain user input
     }
 }
 
@@ -151,19 +154,10 @@ int main(int argc, char* argv[])
 { 
 //	produce screen that takes user username
 //	char str[80]; //attempting ncurses implementation
-	initscr();
-	cbreak(); //enable CTRL+C just in case
-	 
-	int y, x, yBeg, xBeg, yMax, xMax;
 
-	getyx(stdscr,y,x);
-	getbegyx(stdscr,yBeg,xBeg);
-	getmaxyx(stdscr,yMax,xMax); //store maximum values into these variables
-	 
-	WINDOW * inputwin = newwin(3,xMax-12,yMax-5,5); //height,widt,starty,startx
-	refresh();
-	box(inputwin,0,0);
-	wrefresh(inputwin);
+	Ncurses NC = Ncurses(); //creating ncurses object NC
+
+
 	try
   	{
     		
@@ -194,7 +188,7 @@ int main(int argc, char* argv[])
 
 //    char line[chat_message::max_body_length + 1];
 	
-    chat_function(&c);
+    chat_function(&c, NC);
 
 /*    while (std::cin.getline(line, chat_message::max_body_length + 1))
     {
@@ -215,7 +209,7 @@ int main(int argc, char* argv[])
   }
 
 
-  endwin();
+  //endwin();
 
   return 0;
 }

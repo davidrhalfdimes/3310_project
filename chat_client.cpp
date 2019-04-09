@@ -145,7 +145,7 @@ void chat_function(chat_client *c,Ncurses obj)
       msg.encode_header();
       c->write(msg); //dereference
      
-      obj.init_draw ();	
+//      obj.init_draw (); //tryna DEBUG
       //  getstr(str); //attempting to obtain user input
     }
 }
@@ -153,10 +153,14 @@ void chat_function(chat_client *c,Ncurses obj)
 int main(int argc, char* argv[])
 { 
 //	produce screen that takes user username
-//	char str[80]; //attempting ncurses implementation
 
 	Ncurses NC = Ncurses(); //creating ncurses object NC
-
+	
+/*
+ * Currently, this login screen works but doesn't proceed to the next screen where the program should send and receive input. 
+ * If you want to debug back-end functionality, comment out this line and the obj.init_draw(); line(in chat_function)
+ */
+//	NC.login_screen();
 
 	try
   	{

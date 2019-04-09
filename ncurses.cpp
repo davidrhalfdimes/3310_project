@@ -14,6 +14,38 @@ Ncurses::~Ncurses()
 {
 }
 
+void Ncurses::login_screen()
+{
+	initscr();
+	cbreak();
+//	noecho();
+
+	char str[80];
+	int y,x,yBeg,xBeg,yMax,xMax;
+
+
+	getyx(stdscr,y,x);
+	getbegyx(stdscr,yBeg,xBeg);
+	getmaxyx(stdscr,yMax,xMax);
+
+	WINDOW * win_login = newwin(6,xMax/2+5,yMax/2-5,xMax/2-(xMax/4)); //height,width,starty,startx
+	refresh();
+	box(win_login,0,0);
+
+	int left,right,top,bottom,tlc,trc,blc,brc;
+	left = right = 124; //124 ASCII for |
+	top = bottom = 42; //42 ASCII for *
+	tlc = trc = blc = brc = 42; //*
+	wborder(win_login,left,right,top,bottom,tlc,trc,blc,brc);
+
+	mvwprintw(win_login,1,xMax/5,"Enter your username:");
+	wmove(win_login,2,xMax/5);
+	//refresh();
+	wrefresh(win_login);
+
+	wscanw(win_login,"%s",str);
+}
+
 void Ncurses::init_draw() //draw the screen
 {
       	initscr();

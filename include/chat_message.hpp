@@ -49,6 +49,7 @@ public:
     sender = boost::lexical_cast<std::string>(send_out);
     receiver = boost::lexical_cast<std::string>(take_in);
     
+
   }
 
   const char* data() const

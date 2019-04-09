@@ -153,7 +153,7 @@ int main(int argc, char* argv[])
 
       //prints out sender and receiver from chat_message.hpp
       std::cout << "sender: " <<msg.sender << std::endl;
-      std::cout << "receiver: " <<msg.receiver << std:: endl;
+     // std::cout << "receiver: " <<msg.receiver << std:: endl;
 
       //this copies user input to the body of the message
       std::memcpy(msg.body(), line, msg.body_length());

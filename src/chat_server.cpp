@@ -17,6 +17,9 @@
 #include <utility>
 #include "asio.hpp"
 #include "chat_message.hpp"
+#include <map>
+#include <fstream>
+#include <vector>
 
 using asio::ip::tcp;
 
@@ -89,6 +92,7 @@ public:
 
   void deliver(const chat_message& msg)
   {
+    std::cout << msg.sender << std::endl;
     bool write_in_progress = !write_msgs_.empty();
     write_msgs_.push_back(msg);
     if (!write_in_progress)
@@ -207,6 +211,7 @@ int main(int argc, char* argv[])
       return 1;
     }
 
+
     asio::io_context io_context;
 
     std::list<chat_server> servers;
@@ -222,6 +227,5 @@ int main(int argc, char* argv[])
   {
     std::cerr << "Exception: " << e.what() << "\n";
   }
-
   return 0;
 }

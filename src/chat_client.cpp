@@ -14,6 +14,10 @@
 #include <thread>
 #include "asio.hpp"
 #include "chat_message.hpp"
+#include <map>
+#include <vector>
+#include <fstream>
+
 
 using asio::ip::tcp;
 
@@ -136,7 +140,7 @@ int main(int argc, char* argv[])
       std::cerr << "Usage: chat_client <host> <port>\n";
       return 1;
     }
-
+    std::ofstream myfile;
     asio::io_context io_context;
 
     tcp::resolver resolver(io_context);
@@ -153,7 +157,7 @@ int main(int argc, char* argv[])
 
       //prints out sender and receiver from chat_message.hpp
       std::cout << "sender: " <<msg.sender << std::endl;
-     // std::cout << "receiver: " <<msg.receiver << std:: endl;
+      //std::cout << "receiver: " <<msg.receiver << std:: endl;
 
       //this copies user input to the body of the message
       std::memcpy(msg.body(), line, msg.body_length());

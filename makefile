@@ -9,7 +9,7 @@ all: chat_client chat_server
 COMMON_HEADER = chat_message.hpp
 
 #~~Adding client class: put .cpp in next line
-chat_client.o: ${COMMON_HEADER} chat_client.cpp DBMS.cpp role.cpp users.cpp Ncurses.cpp
+chat_client.o: ${COMMON_HEADER} chat_client.cpp DBMS.cpp role.cpp users.cpp ncurses.cpp
 
 #~~Adding client class: put .o in next two lines
 chat_client:chat_client.o DBMS.o role.o users.o ncurses.o

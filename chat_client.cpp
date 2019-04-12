@@ -16,8 +16,8 @@
 #include "asio.hpp"
 #include "chat_message.hpp"
 #include <ncurses.h>
-
 #include "ncurses.h"
+
 using asio::ip::tcp;
 
 
@@ -143,9 +143,10 @@ void chat_function(chat_client *c,Ncurses obj)
       msg.body_length(std::strlen(line));
       std::memcpy(msg.body(), line, msg.body_length());
       msg.encode_header();
-      c->write(msg); //dereference
+      c->write(msg); //dereferencing c object
      
-//      obj.init_draw (); //tryna DEBUG
+//      obj.init_draw(); //draws tryna DEBUG. probably don't need this
+//      obj.lobby_draw();
       //  getstr(str); //attempting to obtain user input
     }
 }
@@ -157,7 +158,7 @@ int main(int argc, char* argv[])
 	Ncurses NC = Ncurses(); //creating ncurses object NC
 	
 /*
- * Currently, this login screen works but doesn't proceed to the next screen where the program should send and receive input. 
+ * Currently, this login screen works, but doesn't proceed to the next screen where the program should send and receive input. 
  * If you want to debug back-end functionality, comment out this line and the obj.init_draw(); line(in chat_function)
  */
 //	NC.login_screen();

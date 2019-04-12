@@ -15,7 +15,7 @@ chat_client.o: ${COMMON_HEADER} chat_client.cpp DBMS.cpp role.cpp users.cpp ncur
 chat_client:chat_client.o DBMS.o role.o users.o ncurses.o
 	${CXX} -o chat_client ncurses.o chat_client.o DBMS.o role.o users.o -lpthread -lncurses
 
-chat_server.o: ${COMMON_HEADER} chat_message.hpp chat_server.cpp
+chat_server.o: ${COMMON_HEADER} chat_server.cpp
 
 #~~Adding server class: put .o in next two lines
 chat_server:chat_server.o DBMS.o users.o
@@ -28,7 +28,7 @@ role.cpp:${COMMON_HEADER} role.h
 
 users.cpp:${COMMON_HEADER} users.h
 
-ncurses.cpp:ncurses.h
+ncurses.cpp:${COMMON_HEADER} ncurses.h
 
 #~~Adding any class: so that the 'make clean' command works properly, put .o in next line
 clean:

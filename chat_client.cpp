@@ -146,7 +146,9 @@ void chat_function(chat_client *c,Ncurses obj)
       c->write(msg); //dereferencing c object
      
 //      obj.init_draw(); //draws tryna DEBUG. probably don't need this
-//      obj.lobby_draw();
+     // obj.lobby_draw();
+      obj.group_screen_draw();
+   //   obj.login_screen();
       //  getstr(str); //attempting to obtain user input
     }
 }
@@ -194,6 +196,7 @@ int main(int argc, char* argv[])
 //    char line[chat_message::max_body_length + 1];
 	
     chat_function(&c, NC);
+ //   chat_function(&c, NC);
 
 /*    while (std::cin.getline(line, chat_message::max_body_length + 1))
     {

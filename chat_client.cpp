@@ -131,9 +131,10 @@ private:
   chat_message_queue write_msgs_;
 };
 
-void chat_function(chat_client *c,Ncurses obj)
+/*void chat_function(chat_client *c,Ncurses obj)
 {
-    char line[chat_message::max_body_length + 1];
+    //char line[chat_message::max_body_length + 1]; //this would be reading off the command line like in example
+
  
     while (std::cin.getline(line, chat_message::max_body_length + 1))
     {
@@ -152,6 +153,7 @@ void chat_function(chat_client *c,Ncurses obj)
       //  getstr(str); //attempting to obtain user input
     }
 }
+*/
 
 int main(int argc, char* argv[])
 { 
@@ -192,22 +194,24 @@ int main(int argc, char* argv[])
     //call upon user class function: if user is part of 0 group, use that thread to create new thread. dequeue the group when the group needs to be deleted.
     //how are we storing the data?? - 
     std::thread t([&io_context](){ io_context.run(); });
-
-//    char line[chat_message::max_body_length + 1];
 	
-    chat_function(&c, NC);
- //   chat_function(&c, NC);
 
-/*    while (std::cin.getline(line, chat_message::max_body_length + 1))
+//    chat_function(&c, NC);
+
+
+   char line[chat_message::max_body_length + 1];
+
+//    char user_line{}; //need to determine syntax and return type of group_screen_draw() to link that function to this while loop by replacing "line" with "user_line." currently running into invalid conversion errors
+//   user_line  = NC.group_screen_draw();
+    while (std::cin.getline(line, chat_message::max_body_length + 1))
     {
       chat_message msg;
       msg.body_length(std::strlen(line));
       std::memcpy(msg.body(), line, msg.body_length());
       msg.encode_header();
       c.write(msg);
-    //  getstr(str);
     }
-*/
+
     c.close();
     t.join();
   }

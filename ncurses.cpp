@@ -19,13 +19,13 @@ Ncurses::~Ncurses()
 void Ncurses::warning_message()
 {
 	initscr();
-	char str1[100] = "Warning: Cannot remove/ban user unless you are ADMIN";
-	char str2[100] = "Warning: Cannot delete group unless you are ADMIN of the group";
+	char warning1[100] = "Warning: Cannot remove/ban user unless you are ADMIN";
+	char warning2[100] = "Warning: Cannot delete group unless you are ADMIN of the group";
 	
 	//if-else conditions printing appropriate warnings for different uses
 	//system messages
 	attron(A_BOLD);
-	printw(str1);
+	printw(warning1);
 	attroff(A_BOLD);
 
 
@@ -79,7 +79,7 @@ void Ncurses::init_draw() //draw the screen. probably don't need this
 	wrefresh(inputwin);
 }
 
-void Ncurses::lobby_draw()
+void Ncurses::lobby_draw() //will need to change this return type eventually
 {
 	initscr();
 	cbreak();
@@ -140,7 +140,7 @@ void Ncurses::lobby_draw()
 	getch();
 }
 
-void Ncurses::group_screen_draw()
+void Ncurses::group_screen_draw() //return type will change
 {
 /*
 
@@ -154,7 +154,7 @@ Make second window group and final window for exit
 	initscr();
 	cbreak();
 //	noecho();
-	char str[80];
+	char user_message[80];
 	int y,x,yBeg,xBeg,yMax,xMax;
 
 	//y and x represents current cursor position
@@ -236,11 +236,11 @@ Make second window group and final window for exit
 	wmove(send_message_box,1,1); //move cursor to type input	
 	wrefresh(send_message_box);
 	refresh();
-	wscanw(send_message_box,"%s",str);
+	wscanw(send_message_box,"%s",&user_message);
 
+//	return *user_message; //need to determine syntax here
 //	mvprintw(win_message_history,20,20,"test"); //move cursor to print input <- not working
-
-	getch();
+//	getch();
 }
 
 

@@ -107,11 +107,11 @@ class chat_client
                           {
                             // This is where message gets printed receiving from server
                             // Handle with ncurses
-                            // std::cout.write( read_msg_.body(), read_msg_.body_length() );
-                            // std::cout << "\n";
-                            mvwprintw( display_box, current_line, 1, read_msg_.body() );
-                            current_line++;
-                            wrefresh( display_box );
+                            std::cout.write( read_msg_.body(), read_msg_.body_length() );
+                            std::cout << "\n";
+                            // mvwprintw( display_box, current_line, 1, read_msg_.body() );
+                            // current_line++;
+                            // wrefresh( display_box );
                             do_read_header();
                           }
                           else
@@ -170,7 +170,7 @@ int main( int argc, char* argv[] )
     std::getline( std::cin, username );
     username += ": ";
 
-    gui_init();
+    //gui_init();
 
     asio::io_context io_context;
 
@@ -180,60 +180,61 @@ int main( int argc, char* argv[] )
 
     std::thread t( [&io_context](){ io_context.run(); } );
 
-    // char line[chat_message::max_body_length + 1];
+    char line[chat_message::max_body_length + 1];
     
-    // //while ( std::cin.getline(line, chat_message::max_body_length + 1) )
-    // while ( std::getline( std::cin, content ) )
-    // {
-    //   std::string timestamp = make_timestamp();
-    //   strcpy( line, timestamp.c_str() );
-    //   strcat( line, username.c_str() );
-    //   strcat( line, content.c_str() );
-
-    //   chat_message msg;
-
-    //   //set length of the body 
-    //   msg.body_length(std::strlen(line));
-
-    //   //memcopy to display the line displayed 
-    //   std::memcpy(msg.body(), line, msg.body_length());
-    //   msg.encode_header();
-    //   c.write(msg);
-    // }
-
-
-    while ( true )
+    //while ( std::cin.getline(line, chat_message::max_body_length + 1) )
+    while ( std::getline( std::cin, content ) )
     {
-      content.clear();
-      content = get_string_from_window( message_box, maxx-2 );
-
-      char line[ chat_message::max_body_length + 1 ];
-      std::memset( line, '\0', chat_message::max_body_length + 1 );
-
-      timestamp = make_timestamp();
-
-      int provided = timestamp.length() + username.length() + content.length() + 1;
-
+      std::string timestamp = make_timestamp();
       strcpy( line, timestamp.c_str() );
       strcat( line, username.c_str() );
       strcat( line, content.c_str() );
-      std::memset( line + provided, '\0', chat_message::max_body_length - provided); 
 
       chat_message msg;
 
-      msg.body_length( std::strlen( line ) );
-      std::memcpy( msg.body(), line, msg.body_length() );
-      msg.encode_header();
-      c.write( msg );
+      //set length of the body 
+      msg.body_length(std::strlen(line));
 
-      safety_lock.lock();
-      make_display_box();
-      make_message_box();
-      safety_lock.unlock();
+      //memcopy to display the line displayed 
+      std::memcpy(msg.body(), line, msg.body_length());
+      msg.encode_header();
+      c.write(msg);
     }
+
+
+  //   while ( true )
+  //   {
+  //     content.clear();
+  //     content = get_string_from_window( message_box, maxx-2 );
+
+  //     char line[ chat_message::max_body_length + 1 ];
+  //     std::memset( line, '\0', chat_message::max_body_length + 1 );
+
+  //     timestamp = make_timestamp();
+
+  //     int provided = timestamp.length() + username.length() + content.length() + 1;
+
+  //     strcpy( line, timestamp.c_str() );
+  //     strcat( line, username.c_str() );
+  //     strcat( line, content.c_str() );
+  //     std::memset( line + provided, '\0', chat_message::max_body_length - provided); 
+
+  //     chat_message msg;
+
+  //     msg.body_length( std::strlen( line ) );
+  //     std::memcpy( msg.body(), line, msg.body_length() );
+  //     msg.encode_header();
+  //     c.write( msg );
+
+  //     safety_lock.lock();
+  //     make_display_box();
+  //     make_message_box();
+  //     safety_lock.unlock();
+  //   }
 
     c.close();
     t.join();
+
   }
   catch ( std::exception& e )
   {

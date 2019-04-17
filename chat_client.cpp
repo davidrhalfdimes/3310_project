@@ -17,7 +17,6 @@
 #include "chat_message.hpp"
 #include <ncurses.h>
 #include "ncurses.h"
-//#include "gui.hpp"
 #include "ncurses.hpp" 
 
 using asio::ip::tcp;
@@ -177,11 +176,7 @@ private:
 */
 
 int main(int argc, char* argv[])
-{ 
-//	produce screen that takes user username
-
-//	Ncurses NC = Ncurses(); //won't need this object when changing to Ncurses.hpp
-	
+{ 	
 	try
   	{
     		if (argc != 3)
@@ -192,10 +187,8 @@ int main(int argc, char* argv[])
 
 		std::string timestamp,username,content; //content: actual message that user types
 
-//		gui_init(); //change this to be our ncurses functions like below
-
 		welcome_draw();
-//		username = login_screen();
+		//username = login_screen();
 		username = "Tom: ";
 		lobby_draw();
 		//group_screen_draw();
@@ -261,8 +254,8 @@ int main(int argc, char* argv[])
 
 			safety_lock.lock();
 			//lobby_draw();
-			refresh_win_message();
 			refresh_win_message_history();
+			refresh_win_message();	
 //			make_display_box(); //function calls that will make their respective window(or box).
 //			make_message_box(); 
 			safety_lock.unlock();

@@ -130,10 +130,11 @@ void welcome_draw() //change to make_welcome_draw(). same applies for other func
 	endwin(); //remove?
 }
 
-std::string login_screen() //enter username
+//seg fault occurs in this function. worth noting that hitting enter without typing anything will avoid segfault
+std::string login_screen() //enter username.
 {
-	initscr(); // //
-//	timeout(-1);
+	initscr();
+//	timeout(-1); //tried -1, 20000
 	cbreak();
 //	noecho();
 
@@ -168,7 +169,7 @@ std::string login_screen() //enter username
 
 void lobby_draw()
 {	
-	initscr(); // //
+//	initscr(); // //
 //	cbreak();
 //	noecho();
 //	char str[80];

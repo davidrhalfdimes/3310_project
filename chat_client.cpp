@@ -17,11 +17,21 @@
 #include "chat_message.hpp"
 #include <ncurses.h>
 #include "ncurses.h"
+//#include "gui.hpp"
+#include "ncurses.hpp" 
 
 using asio::ip::tcp;
 
-
 typedef std::deque<chat_message> chat_message_queue;//queue for chat messages. also need to create queue for group chats(chat rooms) chat_room_queue for example. implement that in users class(?)
+
+const std::string make_timestamp()
+{
+	time_t current_time = time(NULL);
+	std::tm* now = std::localtime(&current_time);
+	char buf[80];
+	strftime(buf,sizeof(buf),"[%Y-%m-%d at %X]",now);
+	return buf;
+}
 
 class chat_client
 {
@@ -91,8 +101,19 @@ private:
         {
           if (!ec)
           {
-            std::cout.write(read_msg_.body(), read_msg_.body_length());
-            std::cout << "\n";
+
+	    char buff[read_msg_.body_length()+1];
+	    strncpy(buff,read_msg_.body(),read_msg_.body_length());
+	    buff[read_msg_.body_length()] = '\0';
+
+	    safety_lock.lock(); 
+	    current_line++;
+	    mvwprintw(win_message_history,current_line,1,buff);
+	    wrefresh(win_message_history);
+	    safety_lock.unlock();  
+
+           // std::cout.write(read_msg_.body(), read_msg_.body_length());
+           // std::cout << "\n";
             do_read_header();
           }
           else
@@ -159,69 +180,103 @@ int main(int argc, char* argv[])
 { 
 //	produce screen that takes user username
 
-	Ncurses NC = Ncurses(); //creating ncurses object NC
+//	Ncurses NC = Ncurses(); //won't need this object when changing to Ncurses.hpp
 	
-/*
- * Currently, this login screen works, but doesn't proceed to the next screen where the program should send and receive input. 
- * If you want to debug back-end functionality, comment out this line and the obj.init_draw(); line(in chat_function)
- */
-//	NC.login_screen();
-
 	try
   	{
-    		
-		if (argc != 3)
+    		if (argc != 3)
     		{
-      		std::cerr << "Usage: chat_client <host> <port>\n";
-      		return 1;
-    		}
+      			std::cerr << "Usage: chat_client <host> <port>\n";
+      			return 1;
+   		}
 
-    asio::io_context io_context;
+		std::string timestamp,username,content; //content: actual message that user types
 
-    //this one is current client that will receive message
-    tcp::resolver resolver(io_context); //instead of io_context, need class that will contain endpoints of each user and pass that member as an argument into this function as many times as necessary
-    //need as many io_context's as we have # of groups
-    //maybe create loop that keeps passing in endpoint until i>endpoint
-    
-    //how many groups there are: create that many threads
-    //if that thread is already created, don't create another. this will be managed by the static queue_groups and vector bool<> members in userse class
-    
-    //this one is for server IP and port: 127.0.0.1 9000, for example
-    auto endpoints = resolver.resolve(argv[1], argv[2]);
+//		gui_init(); //change this to be our ncurses functions like below
 
-    chat_client c(io_context, endpoints);
+		welcome_draw();
+//		username = login_screen();
+		username = "Tom: ";
+		lobby_draw();
+		//group_screen_draw();
 
-    //call upon user class function: if user is part of 0 group, use that thread to create new thread. dequeue the group when the group needs to be deleted.
-    //how are we storing the data?? - 
-    std::thread t([&io_context](){ io_context.run(); });
+		asio::io_context io_context;
+
+		//this one is current client that will receive message
+		tcp::resolver resolver(io_context); //instead of io_context, need class that will contain endpoints of each user and pass that member as an argument into this function as many times as necessary
+		//need as many io_context's as we have # of groups
+		//maybe create loop that keeps passing in endpoint until i>endpoint
+		    
+		//how many groups there are: create that many threads
+		//if that thread is already created, don't create another. this will be managed by the static queue_groups and vector bool<> members in userse class
+		    
+		//this one is for server IP and port: 127.0.0.1 9000, for example
+		auto endpoints = resolver.resolve(argv[1], argv[2]);
+
+		chat_client c(io_context, endpoints);
+
+		//call upon user class function: if user is part of 0 group, use that thread to create new thread. dequeue the group when the group needs to be deleted.
+		//how are we storing the data?? - 
+		std::thread t([&io_context](){ io_context.run(); });
 	
 
-//    chat_function(&c, NC);
+		//chat function(&c, NC);
 
 
-   char line[chat_message::max_body_length + 1];
+		//char line[chat_message::max_body_length + 1];
 
-//    char user_line{}; //need to determine syntax and return type of group_screen_draw() to link that function to this while loop by replacing "line" with "user_line." currently running into invalid conversion errors
-//   user_line  = NC.group_screen_draw();
-    while (std::cin.getline(line, chat_message::max_body_length + 1))
-    {
-      chat_message msg;
-      msg.body_length(std::strlen(line));
-      std::memcpy(msg.body(), line, msg.body_length());
-      msg.encode_header();
-      c.write(msg);
-    }
+		//char user_line{}; //need to determine syntax and return type of group_screen_draw() to link that function to this while loop by replacing "line" with "user_line." currently running into invalid conversion errors
+		//user_line  = NC.group_screen_draw();
+		
+/*		while (std::cin.getline(line, chat_message::max_body_length + 1)) //this entire function different
+  	 	{
+		chat_message msg;
+		msg.body_length(std::strlen(line));
+		std::memcpy(msg.body(), line, msg.body_length());
+		msg.encode_header();
+		c.write(msg);
+    		}
+*/
 
-    c.close();
-    t.join();
-  }
-  catch (std::exception& e)
-  {
-    std::cerr << "Exception: " << e.what() << "\n";
-  }
+		while(true)
+		{
+			char line[chat_message::max_body_length + 1];
+			std::memset(line,'\0', chat_message::max_body_length+1);
+
+			content.clear();
+			content = getInput(win_message); //will need to globalize WINDOW * pointers at start of the newly ncurses.hpp so that this function can work. need to determine what maxx will be too
+
+			timestamp = make_timestamp(); //this function at top of program
+
+			strcpy(line,timestamp.c_str());
+			strcat(line,username.c_str()); //return value of login_screen
+			strcat(line,content.c_str());
+
+			chat_message msg;
+
+			msg.body_length(std::strlen(line));
+			std::memcpy(msg.body(),line,msg.body_length());
+			msg.encode_header();
+			c.write(msg);
+
+			safety_lock.lock();
+			//lobby_draw();
+			refresh_win_message();
+			refresh_win_message_history();
+//			make_display_box(); //function calls that will make their respective window(or box).
+//			make_message_box(); 
+			safety_lock.unlock();
+   		}
+
+		c.close();
+		t.join();
+  	}
+  
+	catch (std::exception& e)
+  	{
+    		std::cerr << "Exception: " << e.what() << "\n";
+  	}
 
 
-  //endwin();
-
-  return 0;
+	return 0;
 }

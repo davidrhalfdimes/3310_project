@@ -1,6 +1,6 @@
-//ncurses.cpp
-//#ifndef NCURSES_GUI_HPP
-//#define NCURSES_GUI_HPP
+//ncurses.hpp
+#ifndef NCURSES_GUI_HPP
+#define NCURSES_GUI_HPP
 
 #include <iostream>
 #include <string>
@@ -10,7 +10,7 @@
 #include <mutex>
 
 //will remove these constructor and deconstructors because object will not be needed
-Ncurses::Ncurses()
+/*Ncurses::Ncurses()
 {
 	//std::cout << "in Ncurses constructor" << std::endl; //proves use of constructor
 }
@@ -18,29 +18,29 @@ Ncurses::~Ncurses()
 {
 
 }
+*/
 
 //"Convenience Variables" Like gui.hpp
-//WINDOW * win_welcome; 	// welcome_draw()
-//WINDOW * win_login; 		// login_screen()
-//WINDOW * inputwin; 		// init_draw() probably don't need this 
-//WINDOW * win_groups; 		// lobby_draw()
-//WINDOW * win_message; 	// lobby_draw()
-//WINDOW * win_users;		// lobby_draw()
-//WINDOW * win_groupname;	// lobby_draw()
-//WINDOW * win_message_history; // lobby_draw()
-//WINDOW * group_title_box;	// group_screen_draw()
-//WINDOW * ret_lobby;		// group_screen_draw()
-//WINDOW * add_user;		// group_screen_draw()
-//WINDOW * win_groupname;	// group_screen_draw()
-//WINDOW * win_message_history; // group_screen_draw() will need to change this as it matches lobby
-//WINDOW * send_message_box;	// group_screen_draw()
+WINDOW * win_welcome; 			// welcome_draw()
+WINDOW * win_login; 			// login_screen()
+WINDOW * win_groups; 			// lobby_draw()
+WINDOW * win_message; 			// lobby_draw()
+WINDOW * win_users;			// lobby_draw()
+WINDOW * win_lobbyname;			// lobby_draw()
+WINDOW * win_message_history; 		// lobby_draw()
+WINDOW * group_title_box;		// group_screen_draw()
+WINDOW * ret_lobby;			// group_screen_draw()
+WINDOW * add_user;			// group_screen_draw()
+WINDOW * win_groupname;			// group_screen_draw()
+WINDOW * win_group_message_history; 	// group_screen_draw() will need to change this as it matches lobby
+WINDOW * send_message_box;		// group_screen_draw()
 
 //will also need something like int maxx so getInput function can work
-//int current_line = 1;
+int current_line = 1;
 
-//std::mutex safety_lock;
+std::mutex safety_lock;
 
-void Ncurses::warning_message()
+void warning_message()
 {
 	initscr();
 	char warning1[100] = "Warning: Cannot remove/ban user unless you are ADMIN";
@@ -55,7 +55,7 @@ void Ncurses::warning_message()
 
 }
 
-void Ncurses::welcome_draw() //change to make_welcome_draw(). same applies for other functions
+void welcome_draw() //change to make_welcome_draw(). same applies for other functions
 {
 	initscr();//comment this out
 	cbreak();
@@ -66,7 +66,7 @@ void Ncurses::welcome_draw() //change to make_welcome_draw(). same applies for o
 	getbegyx(stdscr,yBeg,xBeg);
 	getmaxyx(stdscr,yMax,xMax);
 
-	WINDOW * win_welcome = newwin(6,xMax/2+5,yMax/2-5,xMax/2-(xMax/4)); //height,width,starty,startx
+	win_welcome = newwin(6,xMax/2+5,yMax/2-5,xMax/2-(xMax/4)); //height,width,starty,startx
 	refresh();
 	box(win_welcome,0,0);
 
@@ -130,21 +130,21 @@ void Ncurses::welcome_draw() //change to make_welcome_draw(). same applies for o
 	endwin(); //remove?
 }
 
-
-void Ncurses::login_screen() //enter username. change this return type to return string for main
+std::string login_screen() //enter username
 {
 	initscr(); // //
+//	timeout(-1);
 	cbreak();
 //	noecho();
 
-	char str[80];
+	std::string user_str;
 	int y, x,yBeg,xBeg,yMax,xMax;
 
 	getyx(stdscr,y,x);
 	getbegyx(stdscr,yBeg,xBeg);
 	getmaxyx(stdscr,yMax,xMax);
 
-	WINDOW * win_login = newwin(6,xMax/2+5,yMax/2-5,xMax/2-(xMax/4)); //height,width,starty,startx
+	win_login = newwin(6,xMax/2+5,yMax/2-5,xMax/2-(xMax/4)); //height,width,starty,startx
 	refresh();
 	box(win_login,0,0);
 
@@ -159,42 +159,26 @@ void Ncurses::login_screen() //enter username. change this return type to return
 	//refresh();
 	wrefresh(win_login);
 
-	wscanw(win_login,"%s",str);
+	wscanw(win_login,"%s",user_str);
 
-	//str += ": ";
-	//return str; //returning username to chat_client.cpp
+	endwin();
+//	user_str += ": ";
+	return user_str; //returning username to chat_client.cpp
 }
 
-void Ncurses::init_draw() //draw the screen. probably don't need this
-{
-      	initscr();
-	cbreak(); //enable CTRL+C just in case
-	 
-	int y, x, yBeg, xBeg, yMax, xMax;
-
-	getyx(stdscr,y,x);
-	getbegyx(stdscr,yBeg,xBeg);
-	getmaxyx(stdscr,yMax,xMax); //store maximum values into these variables
-	 
-	WINDOW * inputwin = newwin(3,xMax-12,yMax-5,5); //height,widt,starty,startx
-	refresh();
-	box(inputwin,0,0);
-	wrefresh(inputwin);
-}
-
-void Ncurses::lobby_draw()
+void lobby_draw()
 {	
 	initscr(); // //
-	cbreak();
+//	cbreak();
 //	noecho();
-	char str[80];
+//	char str[80];
 	int y,x,yBeg,xBeg,yMax,xMax;
 
 	getyx(stdscr,y,x);
 	getbegyx(stdscr,yBeg,xBeg);
 	getmaxyx(stdscr,yMax,xMax);
 
-	WINDOW * win_groups = newwin(yMax-2,xMax/5,1,0); //height,width,starty,startx
+	win_groups = newwin(yMax-2,xMax/5,1,0); //height,width,starty,startx
 	refresh();
 	box(win_groups,0,0);
 
@@ -208,17 +192,17 @@ void Ncurses::lobby_draw()
 	mvwprintw(win_groups,1,3*xMax/16,"+");
 	wrefresh(win_groups);
 
-	WINDOW * win_message = newwin(yMax/8,5*xMax/8,7*yMax/8,xMax/5);
+	win_message = newwin(yMax/8,5*xMax/8,7*yMax/8,xMax/5);
 	refresh();
 	box(win_message,0,0);
 	wrefresh(win_message);
 
-	WINDOW * win_users = newwin(yMax-2,11*xMax/64+1,1,33*xMax/40);
+	win_users = newwin(yMax-2,11*xMax/64+1,1,33*xMax/40);
 	box(win_users,0,0);
 	mvwprintw(win_users,1,xMax/12,"Users");
 	wrefresh(win_users);
 
-	WINDOW * win_groupname = newwin(3*yMax/32,5*xMax/8,1,xMax/5);
+	win_lobbyname = newwin(3*yMax/32,5*xMax/8,1,xMax/5);
 	box(win_groupname,0,0);
 	wrefresh(win_groupname);
 
@@ -229,7 +213,7 @@ void Ncurses::lobby_draw()
 	move(yMax-1,0);
 	hline('~',xMax);// line of ~ on bottom
 	
-	WINDOW * win_message_history = newwin(49*yMax/64,5*xMax/8,7*yMax/64+1,xMax/5);
+	win_message_history = newwin(49*yMax/64,5*xMax/8,7*yMax/64+1,xMax/5);
 	box(win_message_history,0,0);
 	wrefresh(win_message_history);
 
@@ -243,7 +227,7 @@ void Ncurses::lobby_draw()
 //	getch();
 }
 
-void Ncurses::group_screen_draw() //return type will change
+void group_screen_draw() //return type will change
 {
 /*
 
@@ -270,7 +254,7 @@ Make second window group and final window for exit
 	start_color();
 
 	//WINDOW * ret_lobby = newwin(yMax-2,xMax/5,2,0); //height,width,starty,startx
-	WINDOW * group_title_box = newwin(0,xMax,0,0); //height,width,starty,startx
+	group_title_box = newwin(0,xMax,0,0); //height,width,starty,startx
 
 	refresh();
 	box(group_title_box,0,0);
@@ -285,13 +269,13 @@ Make second window group and final window for exit
 	wrefresh(group_title_box); //win_groups = ret_lobby
 
 	//box containing button to return to lobby
-	WINDOW * ret_lobby = newwin(yMax-2,11*xMax/64+1,1,1);
+	ret_lobby = newwin(yMax-2,11*xMax/64+1,1,1);
 	box(ret_lobby,0,0);
 	mvwprintw(ret_lobby,1,1,"  Return to Lobby..........<-]");
 	wrefresh(ret_lobby);
 
 	//box containing button to invite user
-	WINDOW * add_user = newwin(yMax-5,11*xMax/64+1,5,1);
+	add_user = newwin(yMax-5,11*xMax/64+1,5,1);
 	box(add_user,0,0);
 	mvwprintw(add_user,4,1,"Add User..........+");
 	wrefresh(add_user);
@@ -301,7 +285,7 @@ Make second window group and final window for exit
 	wrefresh(add_user);
 
 	//title box containing number or name of group, name may change dynamically depending on what is selected
-	WINDOW * win_groupname = newwin(3*yMax/32,5*xMax/8,1,xMax/5);
+	win_groupname = newwin(3*yMax/32,5*xMax/8,1,xMax/5);
 	box(win_groupname,0,0);
 	mvwprintw(win_groupname,1,xMax/3-10,"Group N");
 	wrefresh(win_groupname);
@@ -320,12 +304,12 @@ Make second window group and final window for exit
 	hline('~',xMax);// line of ~ on bottom
 
 
-	WINDOW * win_message_history = newwin(49*yMax/64,5*xMax/8,7*yMax/64+1,xMax/5);
+	win_group_message_history = newwin(49*yMax/64,5*xMax/8,7*yMax/64+1,xMax/5);
 	box(win_message_history,0,0);
 	wrefresh(win_message_history);
 
 	//bottom box for sending messages
-	WINDOW * send_message_box = newwin(yMax/8,5*xMax/8,7*yMax/8,xMax/5+0.5);
+	send_message_box = newwin(yMax/8,5*xMax/8,7*yMax/8,xMax/5+0.5);
 	refresh();
 	//creates box
 	box(send_message_box,0,0);
@@ -351,16 +335,16 @@ Make second window group and final window for exit
 
 
 //redraw function
-void Ncurses::redraw() //redraw the screen so additional input can be made
+void redraw() //redraw the screen so additional input can be made
 {
 	//wrefresh();
 }
 
 
 //function that returns string. this function will then send string info in somewhere in chat client so that the message can be printed
-void Ncurses::getInput() //getInput(WINDOW *target, int column_limit) column limit not even used here
+std::string getInput(WINDOW *target) //getInput(WINDOW *target, int column_limit) column limit not even used here
 {
-	/*
+	
 	std::string input;
 	input.clear();
 
@@ -385,12 +369,28 @@ void Ncurses::getInput() //getInput(WINDOW *target, int column_limit) column lim
 	noecho();
 
 	return input;
-	*/
+	
 }
 
-void Ncurses::exit()
+void refresh_win_message()
+{
+	wclear(win_message);
+	box(win_message,0,0);
+	wrefresh(win_message);
+	curs_set(1);
+	wmove(win_message,1,1);
+}
+
+void refresh_win_message_history()
+{
+	box(win_message_history,0,0);
+	wrefresh(win_message_history);
+	//curs_set(0);
+}
+
+void exit()
 {
 	endwin();
 }
 
-//#endif
+#endif

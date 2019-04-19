@@ -52,7 +52,9 @@ void warning_message()
 	printw(warning1);
 	attroff(A_BOLD);
 
-
+	attron(A_BOLD);
+	printw(warning2);
+	attroff(A_BOLD);
 }
 
 void welcome_draw() //change to make_welcome_draw(). same applies for other functions
@@ -127,11 +129,11 @@ void welcome_draw() //change to make_welcome_draw(). same applies for other func
 		std::exit(0);
 	}
 
-	endwin(); //remove?
+	endwin();
 }
 
 //seg fault occurs in this function. worth noting that hitting enter without typing anything will avoid segfault
-std::string login_screen() //enter username.
+std::string login_screen() //enter username
 {
 	initscr();
 //	timeout(-1); //tried -1, 20000
@@ -139,7 +141,9 @@ std::string login_screen() //enter username.
 //	noecho();
 
 	std::string user_str;
-	int y, x,yBeg,xBeg,yMax,xMax;
+//	user_str = "";
+	user_str.clear();
+	int y,x,yBeg,xBeg,yMax,xMax;
 
 	getyx(stdscr,y,x);
 	getbegyx(stdscr,yBeg,xBeg);
@@ -160,16 +164,26 @@ std::string login_screen() //enter username.
 	//refresh();
 	wrefresh(win_login);
 
-	wscanw(win_login,"%s",user_str);
+	int ch = wgetch(win_login);
 
-	endwin();
-//	user_str += ": ";
+	while(ch != '\n')
+	{
+		echo();
+		user_str.push_back(ch);
+		ch=wgetch(win_login);
+	}
+
+//	wscanw(win_login,"%s",user_str); //SEGFAULT occurs right on this line 
+
+	user_str += ": ";	
+	endwin(); //commenting this out doesn't work
+	
 	return user_str; //returning username to chat_client.cpp
 }
 
 void lobby_draw()
 {	
-//	initscr(); // //
+	initscr(); // //
 //	cbreak();
 //	noecho();
 //	char str[80];
@@ -218,6 +232,10 @@ void lobby_draw()
 	box(win_message_history,0,0);
 	wrefresh(win_message_history);
 
+	//idlok(win_message_history,true);
+	//scrl(-1);
+	scrollok(win_message_history,true); //enable scrolling
+
 	wmove(win_message,1,1); //move cursor to type input	
 	
 	wrefresh(win_message);
@@ -242,7 +260,7 @@ Make second window group and final window for exit
 	initscr();// //
 	cbreak();
 //	noecho();
-	char user_message[80];
+	//char user_message[80];
 	int y,x,yBeg,xBeg,yMax,xMax;
 
 	//y and x represents current cursor position
@@ -387,6 +405,10 @@ void refresh_win_message_history()
 	box(win_message_history,0,0);
 	wrefresh(win_message_history);
 	//curs_set(0);
+	//idlok(win_message_history,true);
+	//scrl(-1);
+	//wscrl(win_message_history,1);
+//	scroll(win_message_history);
 }
 
 void exit()

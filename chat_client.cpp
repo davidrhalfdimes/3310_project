@@ -23,6 +23,8 @@ using asio::ip::tcp;
 
 typedef std::deque<chat_message> chat_message_queue;//queue for chat messages. also need to create queue for group chats(chat rooms) chat_room_queue for example. implement that in users class(?)
 
+int yMax,xMax; //obtain maximum values to be able to check if current_line exceeds height
+
 const std::string make_timestamp()
 {
 	time_t current_time = time(NULL);
@@ -185,11 +187,13 @@ int main(int argc, char* argv[])
       			return 1;
    		}
 
+		getmaxyx(stdscr,yMax,xMax);
+
 		std::string timestamp,username,content; //content: actual message that user types
 
 		welcome_draw();
-		//username = login_screen();
-		username = "Tom: ";
+		username = login_screen();
+		//username = "Tom: ";
 		lobby_draw();
 		//group_screen_draw();
 
@@ -212,9 +216,7 @@ int main(int argc, char* argv[])
 		//how are we storing the data?? - 
 		std::thread t([&io_context](){ io_context.run(); });
 	
-
 		//chat function(&c, NC);
-
 
 		//char line[chat_message::max_body_length + 1];
 
@@ -237,7 +239,7 @@ int main(int argc, char* argv[])
 			std::memset(line,'\0', chat_message::max_body_length+1);
 
 			content.clear();
-			content = getInput(win_message); //will need to globalize WINDOW * pointers at start of the newly ncurses.hpp so that this function can work. need to determine what maxx will be too
+			content = getInput(win_message); 
 
 			timestamp = make_timestamp(); //this function at top of program
 
@@ -255,11 +257,11 @@ int main(int argc, char* argv[])
 			safety_lock.lock();
 			//lobby_draw();
 			refresh_win_message_history();
-			refresh_win_message();	
-//			make_display_box(); //function calls that will make their respective window(or box).
-//			make_message_box(); 
+			refresh_win_message();
 			safety_lock.unlock();
    		}
+
+		endwin(); //ncurses cleanup
 
 		c.close();
 		t.join();

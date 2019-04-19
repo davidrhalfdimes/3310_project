@@ -108,7 +108,13 @@ private:
 	    buff[read_msg_.body_length()] = '\0';
 
 	    safety_lock.lock(); 
-	    current_line++;
+	    current_line++; //check: does 'buff'(which has timestamp,username,content) length exceed width of win_message_history? if so, increment current_line appropriately
+	    /*
+	     *if(buff.length() % (49*yMax/64))
+	     {
+	     	increment current_line appropriately
+	     }
+	     */
 	    mvwprintw(win_message_history,current_line,1,buff);
 	    wrefresh(win_message_history);
 	    safety_lock.unlock();  

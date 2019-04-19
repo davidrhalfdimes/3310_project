@@ -165,12 +165,16 @@ std::string login_screen() //enter username
 	wrefresh(win_login);
 
 	int ch = wgetch(win_login);
+	echo();
 
-	while(ch != '\n')
+	while(ch!='\n')
 	{
-		echo();
-		user_str.push_back(ch);
-		ch=wgetch(win_login);
+		if(ch >= 32 && ch <= 126)
+		{	
+			user_str.push_back(ch);
+		}
+
+		ch = wgetch(win_login);
 	}
 
 //	wscanw(win_login,"%s",user_str); //SEGFAULT occurs right on this line 

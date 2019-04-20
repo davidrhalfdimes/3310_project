@@ -410,9 +410,9 @@ void refresh_win_message_history()
 	wrefresh(win_message_history);
 	//curs_set(0);
 	//idlok(win_message_history,true);
-	//scrl(-1);
-	//wscrl(win_message_history,1);
-//	scroll(win_message_history);
+	//scrl(-2);
+//	wscrl(win_message_history,2);
+	//scroll(win_message_history);
 }
 
 void exit()

@@ -94,39 +94,48 @@ private:
         });
   }
 
-  void do_read_body() //similar implementation to chat_client.cpp note differences
-  {
-    asio::async_read(socket_,
+void do_read_body() //similar implementation to chat_client.cpp note differences
+{
+	asio::async_read(socket_,
         asio::buffer(read_msg_.body(), read_msg_.body_length()),
         [this](std::error_code ec, std::size_t /*length*/)
-        {
-          if (!ec)
-          {
+	{
+        	if (!ec)
+        	{
 
-	    char buff[read_msg_.body_length()+1];
-	    strncpy(buff,read_msg_.body(),read_msg_.body_length());
-	    buff[read_msg_.body_length()] = '\0';
+	    		char buff[read_msg_.body_length()+1];
+			strncpy(buff,read_msg_.body(),read_msg_.body_length());
+			buff[read_msg_.body_length()] = '\0';
 
-	    safety_lock.lock(); 
-	    current_line++; //check: does 'buff'(which has timestamp,username,content) length exceed width of win_message_history? if so, increment current_line appropriately
-	    /*
-	     *if(buff.length() % (49*yMax/64))
-	     {
-	     	increment current_line appropriately
-	     }
-	     */
-	    mvwprintw(win_message_history,current_line,1,buff);
-	    wrefresh(win_message_history);
-	    safety_lock.unlock();  
+			safety_lock.lock(); 
+		//	current_line++; //check: does 'buff'(which has timestamp,username,content) length exceed width of win_message_history? if so, increment current_line appropriately
+		
+		/*	if((int)strlen(buff) > (49*yMax/64)) // need % prob
+			{
+				current_line++;
+			}
+		*/
+			if(current_line>=49*yMax/64)
+			{
+				current_line-=2;
+			}
 
-           // std::cout.write(read_msg_.body(), read_msg_.body_length());
-           // std::cout << "\n";
-            do_read_header();
-          }
-          else
-          {
-            socket_.close();
-          }
+//			std::string test = std::to_string(49*yMax/64);
+//			std::cout<<(test);			
+
+		//	mvwprintw(win_message_history,current_line,1,buff); //window, Y value, X value, char
+			mvwaddstr(win_message_history,current_line,1,buff); //window, Y value, X value, char
+			wrefresh(win_message_history);
+			safety_lock.unlock();  
+
+			//std::cout.write(read_msg_.body(), read_msg_.body_length());
+			// std::cout << "\n";
+			do_read_header();
+          	}
+          	else
+          	{
+            		socket_.close();
+          	}
         });
   }
 
@@ -192,8 +201,12 @@ int main(int argc, char* argv[])
       			std::cerr << "Usage: chat_client <host> <port>\n";
       			return 1;
    		}
-
+		initscr();
 		getmaxyx(stdscr,yMax,xMax);
+
+//		std::string test = std::to_string(49*yMax/64);
+//		std::string test = std::to_string(yMax);
+//		std::cout<<(test.c_str());			
 
 		std::string timestamp,username,content; //content: actual message that user types
 

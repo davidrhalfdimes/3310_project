@@ -17,7 +17,7 @@
 #include <utility>
 #include "asio.hpp"
 #include "chat_message.hpp"
-#include "ncurses.hpp"
+//#include "ncurses.hpp"
 
 using asio::ip::tcp;
 
@@ -126,7 +126,7 @@ private:
         {
           if (!ec)
           {
-	    chat_message_log.push_back(read_msg_);
+	    //chat_message_log.push_back(read_msg_);
             room_.deliver(read_msg_);
             do_read_header();
           }

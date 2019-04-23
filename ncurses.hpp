@@ -30,7 +30,7 @@ int current_line = 1;
 
 std::mutex safety_lock;
 
-std::vector<chat_message> chat_message_log;
+//std::vector<chat_message> chat_message_log;
 
 void warning_message()
 {
@@ -404,12 +404,16 @@ void refresh_win_message()
 void refresh_win_message_history()
 {
 	box(win_message_history,0,0);
-	wrefresh(win_message_history);
+//	wrefresh(win_message_history);
 	//curs_set(0);
 	//idlok(win_message_history,true);
 	//scrl(-2);
 //	wscrl(win_message_history,2);
 	//scroll(win_message_history);
+	scrollok(stdscr,true);
+	scrollok(win_message_history, true);
+	wrefresh(win_message_history);
+	refresh();
 }
 
 void exit()

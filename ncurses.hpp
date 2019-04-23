@@ -395,16 +395,11 @@ void refresh_win_message()
 
 void refresh_win_message_history()
 {
-	box(win_message_history,0,0);
-//	wrefresh(win_message_history);
+//	box(win_message_history,0,0);
 	//curs_set(0);
-	//idlok(win_message_history,true);
-	//scrl(-2);
-	scrollok(win_message_history, true);
-	idlok(win_message_history,true);
-	//wscrl(win_message_history,1);
-	wrefresh(win_message_history);
+	wscrl(win_message_history,1);
 	refresh();
+	wrefresh(win_message_history);
 }
 
 void exit()

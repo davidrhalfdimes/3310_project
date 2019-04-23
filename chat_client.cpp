@@ -114,19 +114,15 @@ void do_read_body() //similar implementation to chat_client.cpp note differences
 
 			safety_lock.lock(); 
 
-			current_line++; //check: does 'buff'(which has timestamp,username,content) length exceed width of win_message_history? if so, increment current_line appropriately
+			current_line++; 
 	
 			if(current_line>=49*yMax/64) //does current_line exceed the height of win_message_history
 			{
 				current_line-=1; //keep current_line in same spot to print the new message at the bottom of the window
 			}
 
-//			std::string test = std::to_string(49*yMax/64);
-//			std::cout<<(test);			
-
 		//	mvwprintw(win_message_history,current_line,1,buff); //window, Y value, X value, char
 			mvwaddstr(win_message_history,current_line,1,buff); //window, Y value, X value, char
-			wrefresh(win_message_history);
 
 			if((int)strlen(buff) > (5*xMax/8)) // does the length of the message exceed the width of win_message_history? (take up 2 lines)
 			{
@@ -139,10 +135,11 @@ void do_read_body() //similar implementation to chat_client.cpp note differences
 			}
 
 			//message limit is 135 characters, so additional cases not needed
+
+			wrefresh(win_message_history);
+
 			safety_lock.unlock();  
 
-			//std::cout.write(read_msg_.body(), read_msg_.body_length());
-			// std::cout << "\n";
 			do_read_header();
           	}
           	else

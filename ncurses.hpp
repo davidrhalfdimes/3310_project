@@ -54,10 +54,8 @@ void welcome_draw() //change to make_welcome_draw(). same applies for other func
 	initscr();//comment this out
 	cbreak();
 
-	int y,x,yBeg,xBeg,yMax,xMax;
+	int yMax,xMax;
 
-	getyx(stdscr,y,x);
-	getbegyx(stdscr,yBeg,xBeg);
 	getmaxyx(stdscr,yMax,xMax);
 
 	win_welcome = newwin(6,xMax/2+5,yMax/2-5,xMax/2-(xMax/4)); //height,width,starty,startx
@@ -135,10 +133,9 @@ std::string login_screen() //enter username
 	std::string user_str;
 //	user_str = "";
 	user_str.clear();
-	int y,x,yBeg,xBeg,yMax,xMax;
+	
+	int yMax,xMax;
 
-	getyx(stdscr,y,x);
-	getbegyx(stdscr,yBeg,xBeg);
 	getmaxyx(stdscr,yMax,xMax);
 
 	win_login = newwin(6,xMax/2+5,yMax/2-5,xMax/2-(xMax/4)); //height,width,starty,startx
@@ -188,10 +185,9 @@ void lobby_draw()
 //	cbreak();
 //	noecho();
 //	char str[80];
-	int y,x,yBeg,xBeg,yMax,xMax;
 
-	getyx(stdscr,y,x);
-	getbegyx(stdscr,yBeg,xBeg);
+	int yMax,xMax;
+
 	getmaxyx(stdscr,yMax,xMax);
 
 	win_groups = newwin(yMax-2,xMax/5,1,0); //height,width,starty,startx
@@ -262,13 +258,9 @@ Make second window group and final window for exit
 	cbreak();
 //	noecho();
 	//char user_message[80];
-	int y,x,yBeg,xBeg,yMax,xMax;
 
-	//y and x represents current cursor position
-	getyx(stdscr,y,x);
+	int yMax,xMax;
 
-	//gets position of y and x
-	getbegyx(stdscr,yBeg,xBeg);
 	getmaxyx(stdscr,yMax,xMax);
 
 	start_color();
@@ -408,10 +400,9 @@ void refresh_win_message_history()
 	//curs_set(0);
 	//idlok(win_message_history,true);
 	//scrl(-2);
-//	wscrl(win_message_history,2);
-	//scroll(win_message_history);
-	scrollok(stdscr,true);
 	scrollok(win_message_history, true);
+	idlok(win_message_history,true);
+	//wscrl(win_message_history,1);
 	wrefresh(win_message_history);
 	refresh();
 }

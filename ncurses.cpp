@@ -9,7 +9,6 @@
 #include "ncurses.h"
 #include <mutex>
 
-//will remove these constructor and deconstructors because object will not be needed
 Ncurses::Ncurses()
 {
 	//std::cout << "in Ncurses constructor" << std::endl; //proves use of constructor
@@ -19,32 +18,11 @@ Ncurses::~Ncurses()
 
 }
 
-//"Convenience Variables" Like gui.hpp
-//WINDOW * win_welcome; 	// welcome_draw()
-//WINDOW * win_login; 		// login_screen()
-//WINDOW * inputwin; 		// init_draw() probably don't need this 
-//WINDOW * win_groups; 		// lobby_draw()
-//WINDOW * win_message; 	// lobby_draw()
-//WINDOW * win_users;		// lobby_draw()
-//WINDOW * win_groupname;	// lobby_draw()
-//WINDOW * win_message_history; // lobby_draw()
-//WINDOW * group_title_box;	// group_screen_draw()
-//WINDOW * ret_lobby;		// group_screen_draw()
-//WINDOW * add_user;		// group_screen_draw()
-//WINDOW * win_groupname;	// group_screen_draw()
-//WINDOW * win_message_history; // group_screen_draw() will need to change this as it matches lobby
-//WINDOW * send_message_box;	// group_screen_draw()
-
-//will also need something like int maxx so getInput function can work
-//int current_line = 1;
-
-//std::mutex safety_lock;
-
 void Ncurses::warning_message()
 {
 	initscr();
 	char warning1[100] = "Warning: Cannot remove/ban user unless you are ADMIN";
-	char warning2[100] = "Warning: Cannot delete group unless you are ADMIN of the group";
+//	char warning2[100] = "Warning: Cannot delete group unless you are ADMIN of the group";
 	
 	//if-else conditions printing appropriate warnings for different uses
 	//system messages
@@ -60,10 +38,8 @@ void Ncurses::welcome_draw() //change to make_welcome_draw(). same applies for o
 	initscr();//comment this out
 	cbreak();
 
-	int y,x,yBeg,xBeg,yMax,xMax;
+	int yMax,xMax;
 
-	getyx(stdscr,y,x);
-	getbegyx(stdscr,yBeg,xBeg);
 	getmaxyx(stdscr,yMax,xMax);
 
 	WINDOW * win_welcome = newwin(6,xMax/2+5,yMax/2-5,xMax/2-(xMax/4)); //height,width,starty,startx
@@ -138,10 +114,9 @@ void Ncurses::login_screen() //enter username. change this return type to return
 //	noecho();
 
 	char str[80];
-	int y, x,yBeg,xBeg,yMax,xMax;
 
-	getyx(stdscr,y,x);
-	getbegyx(stdscr,yBeg,xBeg);
+	int yMax,xMax;
+
 	getmaxyx(stdscr,yMax,xMax);
 
 	WINDOW * win_login = newwin(6,xMax/2+5,yMax/2-5,xMax/2-(xMax/4)); //height,width,starty,startx
@@ -170,11 +145,9 @@ void Ncurses::init_draw() //draw the screen. probably don't need this
       	initscr();
 	cbreak(); //enable CTRL+C just in case
 	 
-	int y, x, yBeg, xBeg, yMax, xMax;
+	int yMax,xMax;
 
-	getyx(stdscr,y,x);
-	getbegyx(stdscr,yBeg,xBeg);
-	getmaxyx(stdscr,yMax,xMax); //store maximum values into these variables
+	getmaxyx(stdscr,yMax,xMax);
 	 
 	WINDOW * inputwin = newwin(3,xMax-12,yMax-5,5); //height,widt,starty,startx
 	refresh();
@@ -187,11 +160,9 @@ void Ncurses::lobby_draw()
 	initscr(); // //
 	cbreak();
 //	noecho();
-	char str[80];
-	int y,x,yBeg,xBeg,yMax,xMax;
+	//char str[80];
+	int yMax,xMax;
 
-	getyx(stdscr,y,x);
-	getbegyx(stdscr,yBeg,xBeg);
 	getmaxyx(stdscr,yMax,xMax);
 
 	WINDOW * win_groups = newwin(yMax-2,xMax/5,1,0); //height,width,starty,startx
@@ -257,14 +228,9 @@ Make second window group and final window for exit
 	initscr();// //
 	cbreak();
 //	noecho();
-	char user_message[80];
-	int y,x,yBeg,xBeg,yMax,xMax;
+	//char user_message[80];
+	int yMax, xMax;
 
-	//y and x represents current cursor position
-	getyx(stdscr,y,x);
-
-	//gets position of y and x
-	getbegyx(stdscr,yBeg,xBeg);
 	getmaxyx(stdscr,yMax,xMax);
 
 	start_color();

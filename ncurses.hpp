@@ -9,16 +9,6 @@
 #include "ncurses.h"
 #include <mutex>
 
-//will remove these constructor and deconstructors because object will not be needed
-/*Ncurses::Ncurses()
-{
-	//std::cout << "in Ncurses constructor" << std::endl; //proves use of constructor
-}
-Ncurses::~Ncurses()
-{
-
-}
-*/
 
 //"Convenience Variables" Like gui.hpp
 WINDOW * win_welcome; 			// welcome_draw()
@@ -39,6 +29,8 @@ WINDOW * send_message_box;		// group_screen_draw()
 int current_line = 1;
 
 std::mutex safety_lock;
+
+std::vector<chat_message> chat_message_log;
 
 void warning_message()
 {
@@ -169,9 +161,14 @@ std::string login_screen() //enter username
 
 	while(ch!='\n')
 	{
-		if(ch >= 32 && ch <= 126)
+		if(ch >= 32 && ch <= 126 && user_str.length() < 11) //username no more than 10 characters long
 		{	
 			user_str.push_back(ch);
+		}
+
+		if(user_str.length() >= 11)
+		{
+			noecho();
 		}
 
 		ch = wgetch(win_login);
@@ -369,7 +366,7 @@ std::string getInput(WINDOW *target) //getInput(WINDOW *target, int column_limit
 {
 	
 	std::string input;
-	input.clear();
+	input.clear(); //just in case
 
 	nocbreak();
 	echo();
@@ -379,7 +376,7 @@ std::string getInput(WINDOW *target) //getInput(WINDOW *target, int column_limit
 	{
 	if(ch >= 32 && ch <= 126)
 	{	
-		input.push_back(ch);
+		input.push_back(ch); //max message length is 135 characters
 	}
 
 	ch = wgetch(target);

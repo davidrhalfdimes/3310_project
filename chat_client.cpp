@@ -220,9 +220,10 @@ int main(int argc, char* argv[])
 
 		std::string timestamp,username,content; //content: actual message that user types
 
+		//string for username 
 		welcome_draw();
-		username = login_screen();
-		//username = "Tom: ";
+		username = login_screen(); 
+
 		lobby_draw();
 		//group_screen_draw();
 
@@ -261,6 +262,17 @@ int main(int argc, char* argv[])
 		c.write(msg);
     		}
 */
+
+		chat_message announcement;
+		char ann_content[chat_message::max_body_length + 1];
+		std::memset(ann_content,'\0', chat_message::max_body_length+1);
+		strcpy( ann_content, "ANNOUNCEMENT: User " );
+		strcat( ann_content, username.substr(0, username.find(':')).c_str() );
+		strcat( ann_content, " has joined." );
+		announcement.body_length( std::strlen( ann_content ) );
+		std::memcpy( announcement.body(), ann_content, announcement.body_length() );
+		announcement.encode_header();
+		c.write( announcement );
 
 		while(true)
 		{

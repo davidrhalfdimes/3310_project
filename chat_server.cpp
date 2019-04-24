@@ -29,9 +29,21 @@ typedef std::deque<chat_message> chat_message_queue;
 
 class chat_participant //have to implement this. this class will be the other users. should have user obj
 {
-public:
-  virtual ~chat_participant() {}
-  virtual void deliver(const chat_message& msg) = 0;
+  public:
+    std::string name, address;
+
+    std::string getname()
+    {
+      return name;
+    }
+
+    std::string getaddress()
+    {
+      return address;
+    }
+
+    virtual ~chat_participant() {}
+    virtual void deliver(const chat_message& msg) = 0;
 };
 
 typedef std::shared_ptr<chat_participant> chat_participant_ptr;
@@ -40,33 +52,34 @@ typedef std::shared_ptr<chat_participant> chat_participant_ptr;
 
 class chat_room
 {
-public:
-  void join(chat_participant_ptr participant)
-  {
-    participants_.insert(participant);
-    for (auto msg: recent_msgs_)
-      participant->deliver(msg);
-  }
+  public:
+    void join(chat_participant_ptr participant)
+    {
+      participants_.insert(participant);
+      for (auto msg: recent_msgs_)
+        participant->deliver(msg);
+    }
 
-  void leave(chat_participant_ptr participant)
-  {
-    participants_.erase(participant);
-  }
+    void leave(chat_participant_ptr participant)
+    {
+      std::cout << "User " << participant->getname() << " at address " << participant->getaddress() << " has left." << std::endl;
+      participants_.erase(participant);
+    }
 
-  void deliver(const chat_message& msg)
-  {
-    recent_msgs_.push_back(msg);
-    while (recent_msgs_.size() > max_recent_msgs)
-      recent_msgs_.pop_front();
+    void deliver(const chat_message& msg)
+    {
+      recent_msgs_.push_back(msg);
+      while (recent_msgs_.size() > max_recent_msgs)
+        recent_msgs_.pop_front();
 
-    for (auto participant: participants_)
-      participant->deliver(msg);
-  }
+      for (auto participant: participants_)
+        participant->deliver(msg);
+    }
 
-private:
-  std::set<chat_participant_ptr> participants_; //user class will use this. list of participants in a group chat.
-  enum { max_recent_msgs = 100 };
-  chat_message_queue recent_msgs_; //need queue for chat queue. chat_queue
+  private:
+    std::set<chat_participant_ptr> participants_; //user class will use this. list of participants in a group chat.
+    enum { max_recent_msgs = 100 };
+    chat_message_queue recent_msgs_; //need queue for chat queue. chat_queue
 };
 
 //----------------------------------------------------------------------
@@ -80,6 +93,8 @@ public:
     : socket_(std::move(socket)),
       room_(room)
   {
+    name = "John Doe";
+    address = socket_.remote_endpoint().address().to_string();
   }
 
   void start()
@@ -126,8 +141,16 @@ private:
         {
           if (!ec)
           {
-	    //chat_message_log.push_back(read_msg_);
-            room_.deliver(read_msg_);
+            // std::string message_content( read_msg_.body() );
+            // if ( message_content.find( "ANNOUNCEMENT:" ) != std::string::npos )
+            // {
+            //   std::cout << message_content << std::endl;
+            // }
+            // else
+            // {
+            //   room_.deliver(read_msg_);
+            // }
+            room_.deliver( read_msg_ );
             do_read_header();
           }
           else

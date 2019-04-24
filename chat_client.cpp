@@ -23,7 +23,8 @@ using asio::ip::tcp;
 
 typedef std::deque<chat_message> chat_message_queue;//queue for chat messages. also need to create queue for group chats(chat rooms) chat_room_queue for example. implement that in users class(?)
 
-int yMax,xMax; //obtain maximum values to be able to check if current_line exceeds height
+int yMax,xMax; //obtain maximum values 
+int wmh_height, wmh_width;
 
 const std::string make_timestamp()
 {
@@ -116,22 +117,21 @@ void do_read_body() //similar implementation to chat_client.cpp note differences
 
 			current_line++; 
 	
-			if(current_line>=49*yMax/64) //does current_line exceed the height of win_message_history
+			if(current_line>=wmh_height) //current_line exceed win_message_history height
 			{
-				current_line-=1; //keep current_line in same spot to print the new message at the bottom of the window
+				current_line-=1; //keep current_line in same spot
 			}
 
-		//	mvwprintw(win_message_history,current_line,1,buff); //window, Y value, X value, char
-			mvwaddstr(win_message_history,current_line,1,buff); //window, Y value, X value, char
+			mvwaddstr(win_message_history,current_line,1,buff); //window, Y, X, char
 
-			if((int)strlen(buff) > (5*xMax/8)) // does the length of the message exceed the width of win_message_history? (take up 2 lines)
+			if((int)strlen(buff) > (wmh_width)) // message length is 2 lines
 			{
-				current_line++; //because message occupies two lines
+				current_line++;
 			}
 
-			if((int)strlen(buff) > 2*(5*xMax/8)) // does the length of the message exceed the width of win_message_history twice? (take up 3 lines)
+			if((int)strlen(buff) > 2*(wmh_width)) // message length is 3lines
 			{
-				current_line++; //because message occupies two lines
+				current_line++;
 			}
 
 			//message limit is 135 characters, so additional cases not needed
@@ -178,30 +178,6 @@ private:
   chat_message_queue write_msgs_;
 };
 
-/*void chat_function(chat_client *c,Ncurses obj)
-{
-    //char line[chat_message::max_body_length + 1]; //this would be reading off the command line like in example
-
- 
-    while (std::cin.getline(line, chat_message::max_body_length + 1))
-    {
-
-//      refresh(); // or wrefresh?
-      chat_message msg;
-      msg.body_length(std::strlen(line));
-      std::memcpy(msg.body(), line, msg.body_length());
-      msg.encode_header();
-      c->write(msg); //dereferencing c object
-     
-//      obj.init_draw(); //draws tryna DEBUG. probably don't need this
-     // obj.lobby_draw();
-      obj.group_screen_draw();
-   //   obj.login_screen();
-      //  getstr(str); //attempting to obtain user input
-    }
-}
-*/
-
 int main(int argc, char* argv[])
 { 	
 	try
@@ -213,17 +189,13 @@ int main(int argc, char* argv[])
    		}
 		initscr();
 		getmaxyx(stdscr,yMax,xMax);
-
-//		std::string test = std::to_string(49*yMax/64);
-//		std::string test = std::to_string(yMax);
-//		std::cout<<(test.c_str());			
-
+		wmh_height = 49*yMax/64; //win_message_history height
+		wmh_width = 5*xMax/8; //win_message_history width	
+		
 		std::string timestamp,username,content; //content: actual message that user types
 
-		//string for username 
 		welcome_draw();
 		username = login_screen(); 
-
 		lobby_draw();
 		//group_screen_draw();
 
@@ -246,13 +218,6 @@ int main(int argc, char* argv[])
 		//how are we storing the data?? - 
 		std::thread t([&io_context](){ io_context.run(); });
 	
-		//chat function(&c, NC);
-
-		//char line[chat_message::max_body_length + 1];
-
-		//char user_line{}; //need to determine syntax and return type of group_screen_draw() to link that function to this while loop by replacing "line" with "user_line." currently running into invalid conversion errors
-		//user_line  = NC.group_screen_draw();
-		
 /*		while (std::cin.getline(line, chat_message::max_body_length + 1)) //this entire function different
   	 	{
 		chat_message msg;

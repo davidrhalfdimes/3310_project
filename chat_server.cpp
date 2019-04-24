@@ -27,8 +27,7 @@ typedef std::deque<chat_message> chat_message_queue;
 
 //----------------------------------------------------------------------
 
-class chat_participant //have to implement this. this class will be the other users. should have user obj
-{
+class chat_participant{ 
   public:
     std::string name, address;
 
@@ -55,6 +54,7 @@ class chat_room
   public:
     void join(chat_participant_ptr participant)
     {
+      std::cout << "User " << participant->getname() << " at address " << participant->getaddress() << " has joined." << std::endl;
       participants_.insert(participant);
       for (auto msg: recent_msgs_)
         participant->deliver(msg);
@@ -93,7 +93,7 @@ public:
     : socket_(std::move(socket)),
       room_(room)
   {
-    name = "John Doe";
+    name = "Test"; //need to obtain username from user
     address = socket_.remote_endpoint().address().to_string();
   }
 

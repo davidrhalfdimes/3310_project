@@ -156,17 +156,34 @@ std::string login_screen() //enter username
 	int ch = wgetch(win_login);
 	echo();
 
-	while(ch!='\n')
+	while(1)
 	{
-		if(ch >= 32 && ch <= 126 && user_str.length() < 11) //username no more than 10 characters long
+		if(ch >= 32 && ch <= 126 && user_str.length() < 11) //username no more than 10 characters
 		{	
 			user_str.push_back(ch);
 		}
 
-		if(user_str.length() >= 11)
+		else if(user_str.length() >= 11)
 		{
 			noecho();
 		}
+
+		else if(ch=='\n' && user_str.length() < 3)
+		{
+			mvwprintw(win_login,1,xMax/10,"Error: Username must be at least 3 characters!");
+			wrefresh(win_login);
+			user_str.clear();
+//			noecho();
+//			getch();
+			mvwprintw(win_login,2,xMax/5,"  "); //blanks to 'erase' previous input
+			wmove(win_login,2,xMax/5);
+		}
+		
+		else if(ch=='\n' && user_str.length() >= 3)
+		{
+			break;
+		}
+
 
 		ch = wgetch(win_login);
 	}
@@ -174,14 +191,14 @@ std::string login_screen() //enter username
 //	wscanw(win_login,"%s",user_str); //SEGFAULT occurs right on this line 
 
 	user_str += ": ";	
-	endwin(); //commenting this out doesn't work
+	endwin(); 
 	
 	return user_str; //returning username to chat_client.cpp
 }
 
 void lobby_draw()
 {	
-	initscr(); // //
+	initscr();
 //	cbreak();
 //	noecho();
 //	char str[80];
@@ -193,18 +210,11 @@ void lobby_draw()
 	win_groups = newwin(yMax-2,xMax/5,1,0); //height,width,starty,startx
 	refresh();
 	box(win_groups,0,0);
-
-	int left,right,top,bottom,tlc,trc,blc,brc;
-	left = right = 124; //124 ASCII for |
-	top = bottom = 42; //42 ASCII for *
-	tlc = trc = blc = brc = 42; //*
-	wborder(win_groups,left,right,top,bottom,tlc,trc,blc,brc);
-
 	mvwprintw(win_groups,1,xMax/16,"Group Chats");
 	mvwprintw(win_groups,1,3*xMax/16,"+");
 	wrefresh(win_groups);
 
-	win_message = newwin(yMax/8,5*xMax/8,7*yMax/8,xMax/5);
+	win_message = newwin(7*yMax/64,5*xMax/8,57*yMax/64,xMax/5);
 	refresh();
 	box(win_message,0,0);
 	wrefresh(win_message);
@@ -215,8 +225,16 @@ void lobby_draw()
 	wrefresh(win_users);
 
 	win_lobbyname = newwin(3*yMax/32,5*xMax/8,1,xMax/5);
-	box(win_groupname,0,0);
-	wrefresh(win_groupname);
+	box(win_lobbyname,0,0);
+
+	int left,right,top,bottom,tlc,trc,blc,brc;
+	left = right = 124; //124 ASCII for |
+	top = bottom = 42; //42 ASCII for *
+	tlc = trc = blc = brc = 42; //*
+	wborder(win_lobbyname,left,right,top,bottom,tlc,trc,blc,brc);
+
+	mvwprintw(win_lobbyname,1,9*xMax/32,"LOBBY");
+	wrefresh(win_lobbyname);
 
 	move(0,0);
 	hline('~',xMax);// line of ~
@@ -226,7 +244,7 @@ void lobby_draw()
 	hline('~',xMax);// line of ~ on bottom
 	
 	win_message_history = newwin(49*yMax/64,5*xMax/8,7*yMax/64+1,xMax/5);
-	box(win_message_history,0,0);
+//	box(win_message_history,0,0);
 	wrefresh(win_message_history);
 
 	//idlok(win_message_history,true);
@@ -237,10 +255,7 @@ void lobby_draw()
 	
 	wrefresh(win_message);
 	refresh();
-//	wscanw(win_message,"%s",str); //this is handled in getInput function
 
-//	mvprintw(win_message_history,20,20,"test"); //move cursor to print input <- not working
-//	getch();
 }
 
 void group_screen_draw() //return type will change
@@ -342,17 +357,6 @@ Make second window group and final window for exit
 //	getch();
 }
 
-
-
-
-
-//redraw function
-void redraw() //redraw the screen so additional input can be made
-{
-	//wrefresh();
-}
-
-
 //function that returns string. this function will then send string info in somewhere in chat client so that the message can be printed
 std::string getInput(WINDOW *target) //getInput(WINDOW *target, int column_limit) column limit not even used here
 {
@@ -397,14 +401,9 @@ void refresh_win_message_history()
 {
 //	box(win_message_history,0,0);
 	//curs_set(0);
-	wscrl(win_message_history,1);
+//	wscrl(win_message_history,1);
 	refresh();
 	wrefresh(win_message_history);
-}
-
-void exit()
-{
-	endwin();
 }
 
 #endif

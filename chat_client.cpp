@@ -117,12 +117,30 @@ void do_read_body() //similar implementation to chat_client.cpp note differences
 
 			current_line++; 
 	
-			if(current_line>=wmh_height) //current_line exceed win_message_history height
-			{
-				current_line-=1; //keep current_line in same spot
+			if(current_line>=wmh_height-1) //current_line exceed win_message_history height
+			{				
+				wscrl(win_message_history,1);
+				refresh();
+				wrefresh(win_message_history);
+				current_line--;
 			}
 
 			mvwaddstr(win_message_history,current_line,1,buff); //window, Y, X, char
+
+			if(current_line>=wmh_height-1) //current_line exceed win_message_history height
+			{				
+				if((int)strlen(buff) > (wmh_width)) // message length is 2 lines
+				{
+					current_line--;	
+					wscrl(win_message_history,1);
+				}
+
+				if((int)strlen(buff) > 2*(wmh_width)) // message length is 3 lines
+				{
+					current_line--;	
+					wscrl(win_message_history,1);
+				}
+			}
 
 			if((int)strlen(buff) > (wmh_width)) // message length is 2 lines
 			{

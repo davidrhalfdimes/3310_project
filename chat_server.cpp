@@ -54,7 +54,7 @@ class chat_room
   public:
     void join(chat_participant_ptr participant)
     {
-      std::cout << "User " << participant->getname() << " at address " << participant->getaddress() << " has joined." << std::endl;
+      std::cout << "\nUser " << participant->getname() << " at address " << participant->getaddress() << " has joined.\n Waiting for new port:"; 
       participants_.insert(participant);
       for (auto msg: recent_msgs_)
         participant->deliver(msg);
@@ -62,7 +62,7 @@ class chat_room
 
     void leave(chat_participant_ptr participant)
     {
-      std::cout << "User " << participant->getname() << " at address " << participant->getaddress() << " has left." << std::endl;
+      std::cout << "\nUser " << participant->getname() << " at address " << participant->getaddress() << " has left.\n Waiting for new port:"; 
       participants_.erase(participant);
     }
 
@@ -74,6 +74,7 @@ class chat_room
 
       for (auto participant: participants_)
         participant->deliver(msg);
+
     }
 
   private:
@@ -222,9 +223,65 @@ private:
 
 //----------------------------------------------------------------------
 
+asio::io_context io_context;
+std::list<chat_server> servers;
+
+void server_runner( int argc, char*argv[])
+{
+	try
+	{
+		if(argc < 2)
+		{
+			std::cerr << "Usage: chat_server <port> [<port> ...]\n";
+			std::exit(1);
+		}
+
+		for(int i = 1; i < argc; ++i)
+		{
+			tcp::endpoint endpoint( tcp::v4(), std::atoi(argv[i]));
+			servers.emplace_back(io_context,endpoint);
+		}
+
+		io_context.run();
+	}
+
+	catch(std::exception& e)
+	{
+		std::cerr << "exception: " << e.what() << "\n";
+	}
+}
+
+void server_spawner()
+{
+	while(true)
+	{
+		std::string newport;
+		std::cout << "Waiting for new port: ";
+		std::getline(std::cin,newport);
+		
+		try
+		{
+			tcp::endpoint endpoint(tcp::v4(),std::atoi(newport.c_str() ) );
+			servers.emplace_back(io_context,endpoint);
+		}
+		
+		catch(const std::exception& e)
+		{
+			std::cerr << e.what() << '\n';
+			continue;
+		}
+	}
+}
+
 int main(int argc, char* argv[])
 {
-  try
+	std::thread asio_runner(server_runner, argc, argv);
+	std::thread asio_spawner(server_spawner);
+	
+	asio_runner.join();
+	asio_spawner.detach();
+	
+/*  try
   {
     if (argc < 2)
     {
@@ -248,5 +305,6 @@ int main(int argc, char* argv[])
     std::cerr << "Exception: " << e.what() << "\n";
   }
 
-  return 0;
+  */
+   return 0;
 }

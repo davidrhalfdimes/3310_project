@@ -125,20 +125,18 @@ void do_read_body() //similar implementation to chat_client.cpp note differences
 				current_line--;
 			}
 
-			mvwaddstr(win_message_history,current_line,1,buff); //window, Y, X, char
+			mvwaddstr(win_message_history,current_line,0,buff); //window, Y, X, char
 
 			if(current_line>=wmh_height-1) //current_line exceed win_message_history height
 			{				
 				if((int)strlen(buff) > (wmh_width)) // message length is 2 lines
 				{
 					current_line--;	
-					wscrl(win_message_history,1);
 				}
 
 				if((int)strlen(buff) > 2*(wmh_width)) // message length is 3 lines
 				{
 					current_line--;	
-					wscrl(win_message_history,1);
 				}
 			}
 
@@ -147,7 +145,7 @@ void do_read_body() //similar implementation to chat_client.cpp note differences
 				current_line++;
 			}
 
-			if((int)strlen(buff) > 2*(wmh_width)) // message length is 3lines
+			if((int)strlen(buff) > 2*(wmh_width)) // message length is 3 lines
 			{
 				current_line++;
 			}
@@ -265,6 +263,13 @@ int main(int argc, char* argv[])
 			content.clear();
 			content = getInput(win_message); 
 
+
+			if(content.find("/quit") != std::string::npos)
+			{
+				endwin();
+				std::exit(0);
+			}
+	
 			timestamp = make_timestamp(); //this function at top of program
 
 			strcpy(line,timestamp.c_str());

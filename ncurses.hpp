@@ -12,18 +12,8 @@
 
 //"Convenience Variables" Like gui.hpp
 WINDOW * win_welcome; 			// welcome_draw()
-WINDOW * win_login; 			// login_screen()
-WINDOW * win_groups; 			// lobby_draw()
-WINDOW * win_message; 			// lobby_draw()
-WINDOW * win_users;			// lobby_draw()
-WINDOW * win_lobbyname;			// lobby_draw()
-WINDOW * win_message_history; 		// lobby_draw()
-WINDOW * group_title_box;		// group_screen_draw()
-WINDOW * ret_lobby;			// group_screen_draw()
-WINDOW * add_user;			// group_screen_draw()
-WINDOW * win_groupname;			// group_screen_draw()
-WINDOW * win_group_message_history; 	// group_screen_draw() will need to change this as it matches lobby
-WINDOW * send_message_box;		// group_screen_draw()
+WINDOW * win_login, *win_groups, *win_message, *win_users, *win_lobbyname, *win_message_history;// login_screen()
+WINDOW * group_title_box, *ret_lobby, *add_user, *win_groupname, *win_group_message_history, *send_message_box;// group_screen_draw()
 
 //will also need something like int maxx so getInput function can work
 int current_line = 1;
@@ -77,13 +67,13 @@ void welcome_draw() //change to make_welcome_draw(). same applies for other func
 	keypad(win_welcome,true);
 
 
-	std::string choices[3]={"Sign Up","Login", "Exit"};
+	std::string choices[3]={"Sign Up","Exit"};
 	int choice;
 	int highlight=0;
 
 	while(1) //infinite loop
 	{
-		for(int i=0;i<3;i++)
+		for(int i=0;i<2;i++)
 		{
 			if(i==highlight)
 				wattron(win_welcome,A_REVERSE);
@@ -102,8 +92,8 @@ void welcome_draw() //change to make_welcome_draw(). same applies for other func
 			break;
 		case KEY_DOWN:
 			highlight++;
-			if(highlight==3) //prevent out of bounds
-				highlight=2;
+			if(highlight==2) //prevent out of bounds
+				highlight=1;
 			break;
 		default:
 			break;
@@ -368,14 +358,15 @@ std::string getInput(WINDOW *target) //getInput(WINDOW *target, int column_limit
 	echo();
 
 	int ch = wgetch(target);
+
 	while(ch!='\n')
 	{
-	if(ch >= 32 && ch <= 126)
-	{	
-		input.push_back(ch); //max message length is 135 characters
-	}
+		if(ch >= 32 && ch <= 126)
+		{	
+			input.push_back(ch); //max message length is 135 characters
+		}
 
-	ch = wgetch(target);
+		ch = wgetch(target);
 
 	}
 

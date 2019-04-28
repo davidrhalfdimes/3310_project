@@ -65,6 +65,11 @@ public:
     asio::post(io_context_, [this]() { socket_.close(); });
   }
 
+  void changeport(const tcp::resolver::results_type& endpoints)
+  {
+    do_connect(endpoints);
+  }
+
 private:
   void do_connect(const tcp::resolver::results_type& endpoints)
   {
@@ -263,32 +268,47 @@ int main(int argc, char* argv[])
 			content.clear();
 			content = getInput(win_message); 
 
-
-			if(content.find("/quit") != std::string::npos)
+			if(content.find("/switch") != std::string::npos)
 			{
-				endwin();
-				std::exit(0);
+				c.close();
+				std::string portnumber;
+				mvwaddstr(win_message,2,1,"Enter port number:\n"); //window, Y, X, char
+				portnumber = getInput(win_message);
+				endpoints = resolver.resolve(argv[1], portnumber.c_str() );
+				io_context.stop();
+				io_context.reset();
+				c.changeport(endpoints);
+				io_context.run();
 			}
 	
-			timestamp = make_timestamp(); //this function at top of program
+			else
+			{
+				if(content.find("/quit") != std::string::npos)
+				{
+					endwin();
+					std::exit(0);
+				}
+		
+				timestamp = make_timestamp(); //this function at top of program
 
-			strcpy(line,timestamp.c_str());
-			strcat(line,username.c_str()); //return value of login_screen
-			strcat(line,content.c_str());
+				strcpy(line,timestamp.c_str());
+				strcat(line,username.c_str()); //return value of login_screen
+				strcat(line,content.c_str());
 
-			chat_message msg;
+				chat_message msg;
 
-			msg.body_length(std::strlen(line));
-			std::memcpy(msg.body(),line,msg.body_length());
-			msg.encode_header();
-			c.write(msg);
+				msg.body_length(std::strlen(line));
+				std::memcpy(msg.body(),line,msg.body_length());
+				msg.encode_header();
+				c.write(msg);
 
-			safety_lock.lock();
-			//lobby_draw();
-			refresh_win_message_history();
-			refresh_win_message();
-			safety_lock.unlock();
-   		}
+				safety_lock.lock();
+				//lobby_draw();
+				refresh_win_message_history();
+				refresh_win_message();
+				safety_lock.unlock();
+   			}
+		}
 
 		endwin(); //ncurses cleanup
 

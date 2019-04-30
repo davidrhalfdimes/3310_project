@@ -268,11 +268,17 @@ int main(int argc, char* argv[])
 			content.clear();
 			content = getInput(win_message); 
 
+			if(content.find("/quit") != std::string::npos)
+			{
+				endwin();
+				std::exit(0);
+			}
+		
 			if(content.find("/switch") != std::string::npos)
 			{
 				c.close();
 				std::string portnumber;
-				mvwaddstr(win_message,2,1,"Enter port number:\n"); //window, Y, X, char
+				mvwaddstr(win_message,2,1,"Enter port number:\n|"); //window, Y, X, char
 				portnumber = getInput(win_message);
 				endpoints = resolver.resolve(argv[1], portnumber.c_str() );
 				io_context.stop();
@@ -283,12 +289,6 @@ int main(int argc, char* argv[])
 	
 			else
 			{
-				if(content.find("/quit") != std::string::npos)
-				{
-					endwin();
-					std::exit(0);
-				}
-		
 				timestamp = make_timestamp(); //this function at top of program
 
 				strcpy(line,timestamp.c_str());

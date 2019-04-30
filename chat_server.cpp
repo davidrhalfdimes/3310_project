@@ -54,8 +54,9 @@ class chat_room
   public:
     void join(chat_participant_ptr participant)
     {
-      std::cout << "\nUser " << participant->getname() << " at address " << participant->getaddress() << " has joined. ";
-//      std::cout << "\nWaiting for new porttttt:"; 
+      std::cout << "\nUser " << participant->getname() << " at address " << participant->getaddress() << " has joined." << " \nWaiting for new port: ";
+      std::cout.flush();
+//      std::cout << "\nWaiting for new port:"; 
       participants_.insert(participant);
       for (auto msg: recent_msgs_)
         participant->deliver(msg);
@@ -63,8 +64,8 @@ class chat_room
 
     void leave(chat_participant_ptr participant)
     {
-      std::cout << "\nUser " << participant->getname() << " at address " << participant->getaddress() << " has left";
-    //  std::cout << "\nWWWWWWWWaiting for new port:"; 
+      std::cout << "\nUser " << participant->getname() << " at address " << participant->getaddress() << " has left" << " \nWaiting for new port: ";
+      std::cout.flush();
       participants_.erase(participant);
     }
 

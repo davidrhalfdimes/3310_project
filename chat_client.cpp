@@ -45,10 +45,15 @@ const std::string make_timestamp()
 	return buf;
 }
 
-void display_user_list()
+/*
+void display_user_list(std::string u_name)
 {
-	
+	Ncurses::lobby_draw();
+	//attempting to use the win_users window from the lobby draw function to print the users
+	mvwprintw(win_users, 1, xMax/12, u_name);
+
 }
+*/
 
 
 
@@ -287,6 +292,13 @@ int main(int argc, char* argv[])
 		file << u_name<<"\n";
 		file.close();
 
+
+		//display_user_list(u_name);
+/*
+		WINDOW * user_list = newwin(6,xMax/2+5,yMax/2-5,xMax/2-(xMax/4)); //height,width,starty,startx
+		refresh();
+		box(user_list,0,0);
+		*/
 
 		while(true)
 		{

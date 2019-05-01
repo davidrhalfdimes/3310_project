@@ -19,6 +19,13 @@
 #include "chat_message.hpp"
 //#include "ncurses.hpp"
 
+/*
+#include<string.h>
+#include<fctn1.h>
+#include<uninstd.h>
+#include<netinet/in.h>
+#include<sys/socket.h>
+*/
 using asio::ip::tcp;
 
 //----------------------------------------------------------------------
@@ -193,10 +200,11 @@ private:
   chat_message_queue write_msgs_;
 };
 
-//----------------------------------------------------------------------
+//----------------------------------------------------------
 
 class chat_server
 {
+	
 public:
   chat_server(asio::io_context& io_context,
       const tcp::endpoint& endpoint)
@@ -239,6 +247,7 @@ void server_runner( int argc, char*argv[])
 			std::exit(1);
 		}
 
+
 		for(int i = 1; i < argc; ++i)
 		{
 			tcp::endpoint endpoint( tcp::v4(), std::atoi(argv[i]));
@@ -276,6 +285,9 @@ void server_spawner()
 	}
 }
 
+
+
+
 int main(int argc, char* argv[])
 {
 	std::thread asio_runner(server_runner, argc, argv);
@@ -307,6 +319,90 @@ int main(int argc, char* argv[])
   {
     std::cerr << "Exception: " << e.what() << "\n";
   }
+
+  */
+
+
+/*
+  //implementation of the file transfer
+  //code for ftp in server side
+  int file_handler1;
+  int file_handler2;
+
+  int binder;
+
+  //hear variable to listen to socket
+  int hear;
+  int stream;
+
+  //array created for storing the text file's content
+  char file_array[300]={' '};  
+
+  
+  struct sockaddr_in server;
+  struct sockaddr_in client;
+  
+  //using the socket command to create socket for file1
+  file_handler1 =socket(AF_INET,SOCK_STREAM,0);
+  if(file_handler1<0){
+    cout<<"Socket Creation Error: Connection unable to be established.\n";
+    cout<<"Please try again\n";
+    return 0;
+  }
+
+  cout<<"Successful creation of SOCKET!\n";
+
+  server.sin_family=AF_INET;
+  server.sin_port=htons(PORT);
+  server.sin_addr.s_addr=INADDR_ANY;
+  
+  
+  binder = bind(file_hander1 ,(struct sockaddr *)&server,sizeof(server));
+  if(binder <0){
+    cout<<"ERROR\n";
+    return 0;
+  }
+  
+  hear  =listen(file_hander1,BACKLOG);
+  if(hear<0){
+    cout<<"Error listening\n";
+    return 0;
+  }
+  
+  socklen_t file_socket_length =sizeof(client);
+
+  file_handler2=accept(file_handler1,(struct sockaddr*)&client,&file_socket_length);
+  if(file_handler2<0){
+    cout<<"Unable to establish connection with second file handler\n";
+    return 0;
+  }
+
+  int source; //from  == source
+  source =open("sample_server.txt",O_RDONLY);
+  if(source<0){
+	cout<<"Text file ran into errors when attempting to open\n";
+    return 0;
+  }
+
+  int counter =1 ;
+  while((counter = read(source,file_array,sizeof(file_array)))!=0){
+    //s=send(fd2,buf,sizeof(buf),0);
+    stream =write(file_handler2,file_array,counter);
+    if(stream<0)
+    {
+    	cout<<"error sending\n";
+    	return 0;
+    }
+  }
+
+  //closing both file handlers
+  close(file_handler1);
+  close(file_handler2);
+
+  //shutting both down
+  shutdown(file_handler1,0);
+  shutdown(file_handler2,0);
+
 
   */
    return 0;

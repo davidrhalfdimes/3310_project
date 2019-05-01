@@ -17,7 +17,8 @@
 #include "chat_message.hpp"
 #include <ncurses.h>
 #include "ncurses.h"
-#include "ncurses.hpp" 
+#include "ncurses.hpp"
+#include <fstream> 
 
 
 /*
@@ -42,6 +43,11 @@ const std::string make_timestamp()
 	char buf[80];
 	strftime(buf,sizeof(buf),"[%Y-%m-%d at %X]",now);
 	return buf;
+}
+
+void display_user_list()
+{
+	
 }
 
 
@@ -265,11 +271,22 @@ int main(int argc, char* argv[])
 		std::memset(ann_content,'\0', chat_message::max_body_length+1);
 		strcpy( ann_content, "ANNOUNCEMENT: User " );
 		strcat( ann_content, username.substr(0, username.find(':')).c_str() );
+		std::string u_name = username.substr(0, username.find(':')).c_str();
+
+
+		
 		strcat( ann_content, " has joined." );
 		announcement.body_length( std::strlen( ann_content ) );
 		std::memcpy( announcement.body(), ann_content, announcement.body_length() );
 		announcement.encode_header();
 		c.write( announcement );
+
+
+		std::fstream file;
+		file.open("debug.txt",std::ios::app);
+		file << u_name<<"\n";
+		file.close();
+
 
 		while(true)
 		{

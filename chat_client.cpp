@@ -17,7 +17,17 @@
 #include "chat_message.hpp"
 #include <ncurses.h>
 #include "ncurses.h"
-#include "ncurses.hpp" 
+#include "ncurses.hpp"
+#include <fstream> 
+
+
+/*
+#include<string.h>
+#include<fctn1.h>
+#include<uninstd.h>
+#include<netinet/in.h>
+#include<sys/socket.h>
+*/
 
 using asio::ip::tcp;
 
@@ -34,6 +44,18 @@ const std::string make_timestamp()
 	strftime(buf,sizeof(buf),"[%Y-%m-%d at %X]",now);
 	return buf;
 }
+
+/*
+void display_user_list(std::string u_name)
+{
+	Ncurses::lobby_draw();
+	//attempting to use the win_users window from the lobby draw function to print the users
+	mvwprintw(win_users, 1, xMax/12, u_name);
+
+}
+*/
+
+
 
 class chat_client
 {
@@ -249,11 +271,29 @@ int main(int argc, char* argv[])
 		std::memset(ann_content,'\0', chat_message::max_body_length+1);
 		strcpy( ann_content, "ANNOUNCEMENT: User " );
 		strcat( ann_content, username.substr(0, username.find(':')).c_str() );
+		std::string u_name = username.substr(0, username.find(':')).c_str();
+
+
+		
 		strcat( ann_content, " has joined." );
 		announcement.body_length( std::strlen( ann_content ) );
 		std::memcpy( announcement.body(), ann_content, announcement.body_length() );
 		announcement.encode_header();
 		c.write( announcement );
+
+
+		std::fstream file;
+		file.open("debug.txt",std::ios::app);
+		file << u_name<<"\n";
+		file.close();
+
+
+		//display_user_list(u_name);
+/*
+		WINDOW * user_list = newwin(6,xMax/2+5,yMax/2-5,xMax/2-(xMax/4)); //height,width,starty,startx
+		refresh();
+		box(user_list,0,0);
+		*/
 
 		while(true)
 		{
@@ -330,6 +370,73 @@ int main(int argc, char* argv[])
     		std::cerr << "Exception: " << e.what() << "\n";
   	}
 
+  	/*
 
+  //implementation of the file transfer
+  //code for ftp in client side
+
+  //creating variable as bool for file handler
+  int file_handler;
+
+  struct sockaddr_in server;
+  struct hostent *host_party; //hp = host_party
+
+  //variable for counter and file array
+  int counter; //cnct == counter
+  char file_array[300]= {' '};
+
+  server.sin_family=AF_INET;
+  server.sin_port=htons(PORT);
+  server.sin_addr.s_addr=INADDR_ANY;
+
+  //using the socket command to create socket for file
+  file_handler=socket(AF_INET,SOCK_STREAM,0);
+  if(file_handler<0){
+    cout<<"Socket Creation Error: Connection unable to be established.\n";
+    cout<<"Please try again\n";
+    return 0;
+  }
+
+ cout<<"Successful creation of SOCKET!\n";
+
+  host_party=gethostbyname(argv[1]);
+  bcopy((char *)host_party->h_addr,(char *)&server.sin_addr.s_addr,host_party->h_length);
+
+  //storing the value of the file handler when connection is attempted to the server
+  counter=connect(file_handler,(struct sockaddr*)&server,sizeof(server));
+
+  //error message
+  if(counter<0){
+    cout<<"ERROR\n";
+    return 0;
+  }
+  
+  //variables created as booleans for the storing position in the file
+  //and the destination itself
+  int record;
+  int destination;
+
+  destination=create("sample_client.txt",0777);
+  if(destination<0){
+    cout<<"Error creating file\n";
+    return 0;
+  }
+
+  //attempting to receive the file passed in
+  int write;
+  while(record=recv(file_handler,file_array,sizeof(file_array),0)){
+    if(record<0){
+      cout<<"ERROR: File not received\n";
+      return 0;
+    }
+    //if the program doesn't run into errors
+    write=write(destination,file_array,record);
+  }
+
+  //closing and shutting down the file handler
+  close(file_handler);
+  shutdown(file_handler,0);
+
+  */
 	return 0;
 }

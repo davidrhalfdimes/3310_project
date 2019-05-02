@@ -322,6 +322,18 @@ int main(int argc, char* argv[])
 				io_context.run();
 			}
 
+			if(content.find("/help") != std::string::npos)
+			{
+				int ch = wgetch(win_message);
+				while(1)
+				{
+					mvwaddstr(win_message,0,1,"/help for commands \n /switch to switch to new port\n /block to block user message \n Press any key to make this disappear");
+					wrefresh(win_message);
+					if(ch == '\n')
+						break;
+				}
+			}
+
 			else
 			{
 				timestamp = make_timestamp(); //this function at top of program
@@ -343,20 +355,6 @@ int main(int argc, char* argv[])
 				refresh_win_message();
 				safety_lock.unlock();
    			}
-
-
-				if(content.find("/help") != std::string::npos)
-			{
-						
-				std::string portnumber;
-				mvwaddstr(win_message,5,15,"/help for commands \n /switch to switch to new port\n /block to block user message \n "); //window, Y, X, char
-				portnumber = getInput(win_message);
-				endpoints = resolver.resolve(argv[1], portnumber.c_str() );
-				io_context.stop();
-				io_context.reset();
-				c.changeport(endpoints);
-				io_context.run();
-			}
 		}
 
 		endwin(); //ncurses cleanup

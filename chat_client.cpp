@@ -349,7 +349,7 @@ int main(int argc, char* argv[])
 			{
 						
 				std::string portnumber;
-				mvwaddstr(win_message,5,10,"/help for commands \n /switch to switch to new port\n /block to block user message \n "); //window, Y, X, char
+				mvwaddstr(win_message,5,15,"/help for commands \n /switch to switch to new port\n /block to block user message \n "); //window, Y, X, char
 				portnumber = getInput(win_message);
 				endpoints = resolver.resolve(argv[1], portnumber.c_str() );
 				io_context.stop();

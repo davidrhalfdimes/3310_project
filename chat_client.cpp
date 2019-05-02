@@ -108,12 +108,7 @@ void do_read_body() //similar implementation to chat_client.cpp note differences
 	{
         	if (!ec)
         	{
-	/*		int i;
-			for(i=current_line - 49*yMax/64; i<current_line ;i++)
-			{
-				mvwaddstr(win_message_history,i,1,chat_message_log[i]); //window, Y value, X value, char
-			}
-	*/
+
 	    		char buff[read_msg_.body_length()+1];
 			strncpy(buff,read_msg_.body(),read_msg_.body_length());
 			buff[read_msg_.body_length()] = '\0';
@@ -286,7 +281,7 @@ int main(int argc, char* argv[])
 				c.changeport(endpoints);
 				io_context.run();
 			}
-	
+
 			else
 			{
 				timestamp = make_timestamp(); //this function at top of program
@@ -308,6 +303,20 @@ int main(int argc, char* argv[])
 				refresh_win_message();
 				safety_lock.unlock();
    			}
+
+
+				if(content.find("/help") != std::string::npos)
+			{
+						
+				std::string portnumber;
+				mvwaddstr(win_message,5,10,"/help for commands \n /switch to switch to new port\n /block to block user message \n "); //window, Y, X, char
+				portnumber = getInput(win_message);
+				endpoints = resolver.resolve(argv[1], portnumber.c_str() );
+				io_context.stop();
+				io_context.reset();
+				c.changeport(endpoints);
+				io_context.run();
+			}
 		}
 
 		endwin(); //ncurses cleanup
